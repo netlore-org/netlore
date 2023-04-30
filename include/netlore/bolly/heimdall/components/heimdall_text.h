@@ -35,6 +35,14 @@
 
 # include <SDL2/SDL_ttf.h>
 
+typedef struct __component_text_t {
+    char* text_value;
+
+    bool   is_selected;
+    int    lines_selected;
+    int[]  each_line_size;
+} component_text_t;
+
 # define HEIMDALL_COMPONENT_TEXT 0x00
 
 void heimdall_text_render(window_t* window, component_t* component);
