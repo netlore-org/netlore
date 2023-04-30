@@ -1,5 +1,3 @@
-### Notion.so version [here!](https://wild-curler-b6f.notion.site/Netlore-Simple-lightweight-experimental-browers-0640eac76821466fa6ea76a22e59dd1d)
-
 # Netlore - Simple, lightweight experimental browers.
 
 ## Goal and my thoughts..
@@ -84,3 +82,5 @@ What will I use while creating netlore, I can just answer C and go on with this 
         - [ ]  *SDL2*
         - [ ]  *CURL*
     - [ ]  *Build whole engine*
+
+### Notion.so version [here!](https://wild-curler-b6f.notion.site/Netlore-Simple-lightweight-experimental-browers-0640eac76821466fa6ea76a22e59dd1d)
