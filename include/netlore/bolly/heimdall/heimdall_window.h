@@ -31,6 +31,7 @@
 #define __NETLORE_HEIMDALL_WINDOW
 
 # include <netlore/bolly/heimdall/heimdall_utils.h>
+# include <netlore/bolly/heimdall/heimdall_ui.h>
 # include <netlore/bolly/heimdall/heimdall_rgb.h>
 
 # include <netlore/netlore.h>
