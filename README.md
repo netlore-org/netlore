@@ -54,8 +54,8 @@ What will I use while creating netlore, I can just answer C and go on with this 
 ## To do list..
 
 - [ ]  **Heimdall** (UI & Window Manager)
-    - [ ]  *Create simple Window creator*
-    - [ ]  *Simple rendering system*
+    - [X]  *Create simple Window creator*
+    - [X]  *Simple rendering system*
     - [ ]  *UI Manager*
     - [ ]  *UI Components*
         - [ ]  *Inputs*
