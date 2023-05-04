@@ -65,7 +65,6 @@ main(int argc, char** argv)
 
     heimdall_initialize();
     heimdall_init_font_manager("./res/font2.ttf", 64);
-    heimdall_initalize_ui();
 
     window_t* window = heimdall_initalize_window("Netlore", heimdall_create_size2(1280, 720), 
                                                  heimdall_create_color_rgba(255, 255, 255, 255), heimdall_create_color_rgba(255, 255, 255, 255));
@@ -75,6 +74,7 @@ main(int argc, char** argv)
     // main_surface = SDL_CreateRGBSurfaceWithFormat(0, 1280, 720, 32, SDL_PIXELFORMAT_RGBA32);
     // heimdall_surface_draw_fill_rect(main_surface, heimdall_create_vec2(10, 10), 
     //                                 heimdall_create_size2(100, 100), heimdall_create_color_rgba(255, 255, 0, 255));
-    
+
+    heimdall_initalize_ui(window);
     heimdall_window_loop(window);
 }

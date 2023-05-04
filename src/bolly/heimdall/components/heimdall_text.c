@@ -29,8 +29,10 @@
 
 # include <netlore/netlore.h>
 
-# include <netlore/bolly/heimdall/components/heimdall_text.h>
 # include <netlore/bolly/heimdall/heimdall_ui.h>
+# include <netlore/bolly/heimdall/components/heimdall_text.h>
+
+typedef struct __component_t component_t;
 
 void
 heimdall_text_render(window_t* window, component_t* component)
@@ -41,20 +43,20 @@ heimdall_text_render(window_t* window, component_t* component)
 void
 heimdall_text_event(window_t* window, component_t* component, SDL_Event event)
 {
-    if (event.button.state != SDL_BUTTON_LEFT || event.motion.state != SDL_BUTTON_LMASK)
-        return;
+    // if (event.button.state != SDL_BUTTON_LEFT || event.motion.state != SDL_BUTTON_LMASK)
+    //     return;
 
-    if (event.type == SDL_MOUSEMOTION)
-    {
+    // if (event.type == SDL_MOUSEMOTION)
+    // {
 
-    }
+    // }
 
-    if (event.type == SDL_MOUSEBUTTONDOWN)
-    {
-        component->text.is_selected = true;
-        component->text.lines_selected = 0;
-        component->text.each_line_size = (int[])NULL;
-    }
+    // if (event.type == SDL_MOUSEBUTTONDOWN)
+    // {
+    //     component->text.is_selected = true;
+    //     component->text.lines_selected = 0;
+    //     component->text.each_line_size = (int[])NULL;
+    // }
 }
 
 void

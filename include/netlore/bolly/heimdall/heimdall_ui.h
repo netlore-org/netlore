@@ -42,12 +42,40 @@
 
 # include <SDL2/SDL.h>
 
-typedef unsigned short kind;
+typedef unsigned short component_kind_t;
 
 struct __component_t;
 typedef void (*component_render_t)(window_t* window, struct __component_t* component);
 typedef void (*component_event_t)(window_t* window, struct __component_t* component, SDL_Event event);
 typedef void (*component_init_t)(window_t* window, struct __component_t* component);
+
+#ifndef __NETLORE_HEIMDALL_COMPONENTS_BUTTON
+typedef struct __component_button_t {
+
+} component_button_t;
+#endif 
+
+#ifndef __NETLORE_HEIMDALL_COMPONENTS_INPUT
+typedef struct __component_input_t {
+
+} component_input_t;
+#endif
+
+#ifndef __NETLORE_HEIMDALL_COMPONENTS_IMAGE
+typedef struct __component_image_t {
+
+} component_image_t;
+#endif
+
+#ifndef __NETLORE_HEIMDALL_COMPONENTS_TEXT
+typedef struct __component_text_t {
+    char* text_value;
+
+    bool   is_selected;
+    int    lines_selected;
+    int    each_line_size[];
+} component_text_t;
+#endif
 
 typedef struct __component_t {
     component_kind_t kind;

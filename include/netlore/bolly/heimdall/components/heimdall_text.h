@@ -31,6 +31,7 @@
 #define __NETLORE_HEIMDALL_COMPONENTS_TEXT
 
 # include <netlore/netlore.h>
+# include <netlore/bolly/heimdall/heimdall_window.h>
 # include <netlore/bolly/heimdall/heimdall_ui.h>
 
 # include <SDL2/SDL_ttf.h>
@@ -40,10 +41,13 @@ typedef struct __component_text_t {
 
     bool   is_selected;
     int    lines_selected;
-    int[]  each_line_size;
+    int    each_line_size[];
 } component_text_t;
 
-# define HEIMDALL_COMPONENT_TEXT 0x00
+typedef struct __component_t component_t;
+typedef struct __window_t window_t;
+
+# define HEIMDALL_COMPONENT_TEXT 0x03
 
 void heimdall_text_render(window_t* window, component_t* component);
 

@@ -38,6 +38,7 @@
 # include <SDL2/SDL.h>
 
 struct __window_t;
+struct __ui_t;
 
 typedef void (*HEIMDALL_INPUT_FUNC) (struct __window_t* window, SDL_Event event);
 typedef void (*HEIMDALL_RENDER_FUNC)(struct __window_t* window);
@@ -58,6 +59,8 @@ typedef struct __window_t {
     unsigned long frames;
     unsigned long fps;
     clock_t       last_tick; 
+
+    struct __ui_t* ui;
 } window_t;
 
 void heimdall_initialize();

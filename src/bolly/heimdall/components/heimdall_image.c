@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  */
 
-
+/*
  * This code is part of Heimdall (UI & Window Manager)
  * Component of Netlore project that can be found at 
  * the github repository at:
@@ -29,8 +29,10 @@
 
 # include <netlore/netlore.h>
 
-# include <netlore/bolly/heimdall/components/heimdall_image.h>
 # include <netlore/bolly/heimdall/heimdall_ui.h>
+# include <netlore/bolly/heimdall/components/heimdall_image.h>
+
+typedef struct __component_t component_t;
 
 void
 heimdall_image_render(window_t* window, component_t* component)

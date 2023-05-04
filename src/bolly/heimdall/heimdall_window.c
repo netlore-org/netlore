@@ -27,7 +27,6 @@
  *  - https://github.com/netlore-org/netlore
  */
 
-#include <SDL2/SDL_video.h>
 #include <netlore/bolly/heimdall/heimdall_geometry.h>
 #include <netlore/bolly/heimdall/heimdall_window.h>
 #include <netlore/bolly/heimdall/heimdall_events.h>
@@ -38,12 +37,12 @@
 
 #include <netlore/netlore.h>
 
+#include <SDL2/SDL_video.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL.h>
 
-#define IMG_INIT_FLAGS (IMG_INIT_JPG  | IMG_INIT_PNG | IMG_INIT_TIF |  \
-                        IMG_INIT_WEBP | IMG_INIT_JXL | IMG_INIT_AVIF)  \
+#define IMG_INIT_FLAGS (IMG_INIT_JPG  | IMG_INIT_PNG | IMG_INIT_TIF | IMG_INIT_WEBP)
 
 void
 heimdall_initialize()

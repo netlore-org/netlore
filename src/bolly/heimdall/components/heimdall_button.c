@@ -29,8 +29,10 @@
 
 # include <netlore/netlore.h>
 
-# include <netlore/bolly/heimdall/components/eimdall_button.h>
 # include <netlore/bolly/heimdall/heimdall_ui.h>
+# include <netlore/bolly/heimdall/components/heimdall_button.h>
+
+typedef struct __component_t component_t;
 
 void
 heimdall_button_render(window_t* window, component_t* component)

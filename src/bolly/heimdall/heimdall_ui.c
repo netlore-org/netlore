@@ -44,17 +44,17 @@ heimdall_component_kind_string(component_kind_t kind)
 {
     switch (kind)
     {
-        case HEIMDALL_BUTTON_COMPONENT:
+        case 0x00:
             return "BUTTON_COMPONENT";
             break;
-        case HEIMDALL_INPUT_COMPONENT:
-            return "INPUT_COMPONENT"
+        case 0x01:
+            return "INPUT_COMPONENT";
             break;
-        case HEIMDALL_IMAGE_COMPONENT:
+        case 0x02:
             return "IMAGE_COMPONENT";
             break;
-        case HEIMDALL_TEXT_COMPONENT:
-            return "TEXT_COMPONENT"
+        case 0x03:
+            return "TEXT_COMPONENT";
             break;
     }
 
@@ -68,7 +68,7 @@ heimdall_initalize_ui(window_t* window)
     ui_t* ui = (ui_t*)netlore_calloc(1, sizeof(ui_t));
 
     ui->components_len = 1;
-    ui->components     = (component_t*)netlore_calloc(ui->components_len, sizeof(component_t));
+    ui->components     = (component_t**)netlore_calloc(ui->components_len, sizeof(component_t));
     ui->window         = window;
 
     window->ui         = ui;
