@@ -2,17 +2,17 @@
 
 ## About
 
-Netlore is a simple, lightweight experimental browser and web engine written in C. It is a passion project that aims to showcase my love for programming while also serving as a fun and educational endeavor. Developing Netlore alone can be challenging, but I believe that I can, contributing is wanted of course.
+**Netlore** is a simple, lightweight **experimental** browser and web engine written in C. It is a passion project that aims to showcase my love for programming while also serving as a fun and educational endeavor. Developing Netlore alone can be challenging, but I believe that I can, **contributing is wanted of course**.
 
 # Project Goals
 
 The main objectives for Netlore are as follows:
-- Compatibility with HTML 4.0: Netlore aims to be compatible with the HTML 4.0 standard, allowing users to browse websites built using this version.
-- Support for CSS 2.0 or even 3.0: Netlore seeks to provide basic support for CSS 2.0 and possibly CSS 3.0. This will allow users to render web pages with styled content and enhance the overall browsing experience.
-- JavaScript Engine Support: Netlore intends to incorporate a JavaScript engine, such as Node.js or V8, enabling users to interact with dynamic and interactive web content.
-- User Interface Design: The project aims to create a visually appealing and user-friendly interface for the browser, ensuring a pleasant browsing experience.
-- Custom HTML and CSS Parser: Netlore will feature its own HTML and CSS parser, developed from scratch. This will not only enhance the understanding of these technologies but also provide flexibility and customization options.
-- Enjoyment and Personal Growth: Above all, Netlore is meant to be an enjoyable project that allows me to explore programming concepts, learn new skills, and challenge myself. The primary objective is personal growth and satisfaction.
+- **Compatibility with HTML 4.0**: Netlore aims to be compatible with the HTML 4.0 standard, allowing users to browse websites built using this version.
+- **Support for CSS 2.0 or even 3.0**: Netlore seeks to provide basic support for CSS 2.0 and possibly CSS 3.0. This will allow users to render web pages with styled content and enhance the overall browsing experience.
+- J**avaScript Engine Support**: Netlore intends to incorporate a JavaScript engine, such as Node.js or V8, enabling users to interact with dynamic and interactive web content.
+- **User Interface Design**: The project aims to create a visually appealing and user-friendly interface for the browser, ensuring a pleasant browsing experience.
+- **Custom HTML and CSS Parser**: Netlore will feature its own HTML and CSS parser, developed from scratch. This will not only enhance the understanding of these technologies but also provide flexibility and customization options.
+- **Enjoyment and Personal Growth**: Above all, Netlore is meant to be an enjoyable project that allows me to explore programming concepts, learn new skills, and challenge myself. The primary objective is personal growth and satisfaction.
 
 ## Disclaimer
 
