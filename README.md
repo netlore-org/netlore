@@ -4,7 +4,7 @@
 
 **Netlore** is a simple, lightweight **experimental** browser and web engine written in C. It is a passion project that aims to showcase my love for programming while also serving as a fun and educational endeavor. Developing Netlore alone can be challenging, but I believe that I can, **contributing is wanted of course**.
 
-# Project Goals
+## Project Goals
 
 The main objectives for Netlore are as follows:
 - **Compatibility with HTML 4.0**: Netlore aims to be compatible with the HTML 4.0 standard, allowing users to browse websites built using this version.
