@@ -4,8 +4,6 @@
 
 Netlore is a simple, lightweight experimental browser and web engine written in C. It is a passion project that aims to showcase my love for programming while also serving as a fun and educational endeavor. Developing Netlore alone can be challenging, but I believe that I can, contributing is wanted of course.
 
----
-
 # Project Goals
 
 The main objectives for Netlore are as follows:
@@ -16,13 +14,9 @@ The main objectives for Netlore are as follows:
 - Custom HTML and CSS Parser: Netlore will feature its own HTML and CSS parser, developed from scratch. This will not only enhance the understanding of these technologies but also provide flexibility and customization options.
 - Enjoyment and Personal Growth: Above all, Netlore is meant to be an enjoyable project that allows me to explore programming concepts, learn new skills, and challenge myself. The primary objective is personal growth and satisfaction.
 
----
-
 ## Disclaimer
 
 It's important to note that developing a fully functional browser compatible with all the latest web standards is an enormous undertaking. While I am fully committed to the project, I understand the challenges and limitations associated with developing such a complex piece of software independently. However, the primary goal of Netlore remains to have fun, enjoy the programming process, and challenge myself.
-
----
 
 ## Components of Netlore
 
@@ -40,8 +34,6 @@ Netlore will be divide in some parts, for example UI system will have other name
         - **Freja** (Network caller) - Component in which every HTTPS request goes by.
     - **Fredric** (Build system.. Why would it have even a name lol?)
 
----
-
 ## What will I use to create it?
 
 What will I use while creating netlore, I can just answer C and go on with this text but let’s divide it in some parts.
@@ -57,8 +49,6 @@ What will I use while creating netlore, I can just answer C and go on with this 
 | Build system | Fredric | Makefile, Python | None (is there even a library for Makefile lmao) |
 
   *As you see i really like C :3*
-
----
 
 ## To do list..
 
