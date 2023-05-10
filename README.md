@@ -1,17 +1,26 @@
 # Netlore - Simple, lightweight experimental browers.
 
-## Goal and my thoughts..
+## About
 
-Netlore will be a simple lightweight experimental browser and web engine fully written in C. In my perspective it will be a fun and teaching project in which I can show all of my passion for programming. Writing a fully browser that is fully compatible with all new standards of web is nearly impossible by doing it for yourself, if I had a team writing it would go more smoother. My goals for netlore are simple:
+Netlore is a simple, lightweight experimental browser and web engine written in C. It is a passion project that aims to showcase my love for programming while also serving as a fun and educational endeavor. Developing Netlore alone can be challenging, but I believe that I can, contributing is wanted of course.
 
-- Be compatible with HTML 4.0
-- Get simple CSS 2.0 working or even 3.0
-- Support JavaScript engine (like NodeJS or V8)
-- Create a good looking UI
-- Write for my own HTML, CSS Parser
-- And mostly have fun!
+---
 
-Did I just written a simple TODO list? Maybe but that doesn’t matter really. These are the things I want to have in Netlore, I fully understand that writing i for myself will be the biggest programming goal I can success but I fully want to have fun and try it for my self.
+# Project Goals
+
+The main objectives for Netlore are as follows:
+- Compatibility with HTML 4.0: Netlore aims to be compatible with the HTML 4.0 standard, allowing users to browse websites built using this version.
+- Support for CSS 2.0 or even 3.0: Netlore seeks to provide basic support for CSS 2.0 and possibly CSS 3.0. This will allow users to render web pages with styled content and enhance the overall browsing experience.
+- JavaScript Engine Support: Netlore intends to incorporate a JavaScript engine, such as Node.js or V8, enabling users to interact with dynamic and interactive web content.
+- User Interface Design: The project aims to create a visually appealing and user-friendly interface for the browser, ensuring a pleasant browsing experience.
+- Custom HTML and CSS Parser: Netlore will feature its own HTML and CSS parser, developed from scratch. This will not only enhance the understanding of these technologies but also provide flexibility and customization options.
+- Enjoyment and Personal Growth: Above all, Netlore is meant to be an enjoyable project that allows me to explore programming concepts, learn new skills, and challenge myself. The primary objective is personal growth and satisfaction.
+
+---
+
+## Disclaimer
+
+It's important to note that developing a fully functional browser compatible with all the latest web standards is an enormous undertaking. While I am fully committed to the project, I understand the challenges and limitations associated with developing such a complex piece of software independently. However, the primary goal of Netlore remains to have fun, enjoy the programming process, and challenge myself.
 
 ---
 
@@ -53,17 +62,17 @@ What will I use while creating netlore, I can just answer C and go on with this 
 
 ## To do list..
 
-- [ ]  **Heimdall** (UI & Window Manager)
+- [X]  **Heimdall** (UI & Window Manager)
     - [X]  *Create simple Window creator*
     - [X]  *Simple rendering system*
-    - [ ]  *UI Manager*
-    - [ ]  *UI Components*
-        - [ ]  *Inputs*
-        - [ ]  *Buttons*
-        - [ ]  *Menu*
-        - [ ]  *Text*
+    - [X]  *UI Manager*
+    - [X]  *UI Components*
+        - [X]  *Inputs*
+        - [X]  *Buttons*
+        - [X]  *Menu*
+        - [X]  *Text*
 - [ ]  **Njord** (HTML, CSS Parser)
-    - [ ]  *HTML Parser*
+    - [X]  *HTML Parser*
     - [ ]  *CSS Parser*
     - [ ]  *Create DOM nodes from them*
 - [ ]  **Balder** (URL Parser)
@@ -81,6 +90,4 @@ What will I use while creating netlore, I can just answer C and go on with this 
     - [ ]  *Toolchain installer*
         - [ ]  *SDL2*
         - [ ]  *CURL*
-    - [ ]  *Build whole engine*
-
-### Notion.so version [here!](https://wild-curler-b6f.notion.site/Netlore-Simple-lightweight-experimental-browers-0640eac76821466fa6ea76a22e59dd1d)
+    - [X]  *Build whole engine*
