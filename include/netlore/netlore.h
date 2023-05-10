@@ -74,11 +74,17 @@
 # define NETLORE_VERSION "0.2.4"
 # define NETLORE_USE(x)  ((void)x)
 
-# define NETLORE_NO_NULL(x) (               \
-    (x == NULL)                             \
-        ? NETLORE_ERROR("out of memory")    \
-        : ((void)x)                         \
-)                                           \
+# define NETLORE_NO_NULL_EXIT(x) (             \
+    (x == NULL)                                \
+        ? NETLORE_ERROR("#x is null, exiting") \
+        : ((void)x)                            \
+)                                              \
+
+# define NETLORE_NO_NULL(x) (                 \
+    (x == NULL)                               \
+        ? NETLORE_ERROR_NO_EXIT("#x is null") \
+        : ((void)x)                           \
+)                                             \
 
 # define NETLORE_NOT_IMPLEMENTED() ({                           \
     NETLORE_ERROR_NO_EXIT("this function is not implemented");  \

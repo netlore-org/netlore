@@ -6,7 +6,7 @@
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * furnished to do so, subject to the following conditions: 
  * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
@@ -20,38 +20,13 @@
  * THE SOFTWARE.
  */
 
-/*
- * This code is part of Heimdall (UI & Window Manager)
- * Component of Netlore project that can be found at 
- * the github repository at:
- *  - https://github.com/netlore-org/netlore
- */
+#ifndef __NETLORE_NETLORE_UTILS
+#define __NETLORE_NETLORE_UTILS
 
-#include <netlore/bolly/heimdall/heimdall_utils.h>
+char* netlore_append_to_alloc_string(char* str, const char c);
 
-#include <netlore/netlore.h>
+char* netlore_create_copy_string(const char* str);
 
-vec2_t
-heimdall_create_vec2(int x, int y)
-{
-    return ((vec2_t){ 
-        .x = x, 
-        .y = y 
-    });
-}
+char* netlore_gen_spacing(int spacing_amount);
 
-size2_t
-heimdall_create_size2(int w, int h)
-{
-    return ((size2_t){ 
-        .w = w, 
-        .h = h 
-    });
-}
-
-bool 
-heimdall_check_collision_box(int x1, int y1, int w1, int h1, 
-                             int x2, int y2, int w2, int h2) 
-{
-    return x1 + w1 > x2 && x1 < x2 + w2 && y1 + h1 > y2 && y1 < y2 + h2;
-}
+#endif /* __NETLORE_NETLORE_UTILS */

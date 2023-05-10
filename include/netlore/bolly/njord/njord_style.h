@@ -21,37 +21,17 @@
  */
 
 /*
- * This code is part of Heimdall (UI & Window Manager)
- * Component of Netlore project that can be found at 
- * the github repository at:
+ * This code is part of Njord (HTML, CSS Parser) Component
+ * of Netlore project that can be found at the github
+ * repository at:
  *  - https://github.com/netlore-org/netlore
  */
 
-#include <netlore/bolly/heimdall/heimdall_utils.h>
+#ifndef __NETLORE_NJORD_STYLE
+#define __NETLORE_NJORD_STYLE
 
-#include <netlore/netlore.h>
+typedef struct __style_t {
+    /* TODO.. */
+} style_t;
 
-vec2_t
-heimdall_create_vec2(int x, int y)
-{
-    return ((vec2_t){ 
-        .x = x, 
-        .y = y 
-    });
-}
-
-size2_t
-heimdall_create_size2(int w, int h)
-{
-    return ((size2_t){ 
-        .w = w, 
-        .h = h 
-    });
-}
-
-bool 
-heimdall_check_collision_box(int x1, int y1, int w1, int h1, 
-                             int x2, int y2, int w2, int h2) 
-{
-    return x1 + w1 > x2 && x1 < x2 + w2 && y1 + h1 > y2 && y1 < y2 + h2;
-}
+#endif /* __NETLORE_NJORD_STYLE */

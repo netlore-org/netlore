@@ -30,16 +30,22 @@
 #ifndef __NETLORE_HEIMDALL_COMPONENTS_IMAGE
 #define __NETLORE_HEIMDALL_COMPONENTS_IMAGE
 
+#include "netlore/bolly/heimdall/heimdall_utils.h"
 # include <netlore/netlore.h>
-# include <netlore/bolly/heimdall/heimdall_window.h>
-# include <netlore/bolly/heimdall/heimdall_ui.h>
 
 # include <SDL2/SDL_ttf.h>
 
 # define HEIMDALL_COMPONENT_IMAGE 0x02
 
 typedef struct __component_image_t {
+    /* Your image can be founded locally in the 
+     * ./res/ folder or globally in the internet
+     * by providing it URL */
+    char* image_path;
+    char* image_url;
 
+    SDL_Texture* image;
+    size2_t      size;
 } component_image_t;
 
 typedef struct __component_t component_t;

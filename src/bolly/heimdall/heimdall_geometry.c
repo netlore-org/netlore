@@ -57,16 +57,14 @@ void
 heimdall_draw_fill_rect(window_t* window, vec2_t pos, size2_t size, color_t color)
 {
     HEIMDALL_IS_NULL_WINDOW(window);
-    HEIMDALL_IS_POS_CORRECT(pos);
-
     SDL_SetRenderDrawBlendMode(window->sdl_renderer, 
                                (color.a == 255) 
                                     ? SDL_BLENDMODE_NONE 
                                     : SDL_BLENDMODE_BLEND);
     SDL_SetRenderDrawColor(window->sdl_renderer, color.r, color.g, color.b, color.a);
 
-    SDL_Rect rect = { .x = (int)pos.x,  .y = (int)pos.y, 
-                      .w = (int)size.w, .h = (int)size.h };
+    SDL_Rect rect = { .x = pos.x,  .y = pos.y, 
+                      .w = size.w, .h = size.h };
     SDL_RenderFillRect(window->sdl_renderer, &rect);
 }
 
@@ -74,16 +72,14 @@ void
 heimdall_draw_rect(window_t* window, vec2_t pos, size2_t size, color_t color)
 {
     HEIMDALL_IS_NULL_WINDOW(window);
-    HEIMDALL_IS_POS_CORRECT(pos);
-
     SDL_SetRenderDrawBlendMode(window->sdl_renderer, 
                                (color.a == 255) 
                                     ? SDL_BLENDMODE_NONE 
                                     : SDL_BLENDMODE_BLEND);
     SDL_SetRenderDrawColor(window->sdl_renderer, color.r, color.g, color.b, color.a);
 
-    SDL_Rect rect = { .x = (int)pos.x,  .y = (int)pos.y, 
-                      .w = (int)size.w, .h = (int)size.h };
+    SDL_Rect rect = { .x = pos.x,  .y = pos.y, 
+                      .w = size.w, .h = size.h };
     SDL_RenderDrawRect(window->sdl_renderer, &rect);
 }
 
@@ -91,18 +87,85 @@ void
 heimdall_draw_fill_circle(window_t* window, vec2_t pos, unsigned int radius, color_t color)
 {
     HEIMDALL_IS_NULL_WINDOW(window);
-    HEIMDALL_IS_POS_CORRECT(pos);
+    
+    int d       = radius - 1;
+    int offsety = radius;
+    int offsetx = 0;
 
-    NETLORE_NOT_IMPLEMENTED();
+    SDL_SetRenderDrawBlendMode(window->sdl_renderer, 
+                               (color.a == 255) 
+                                    ? SDL_BLENDMODE_NONE 
+                                    : SDL_BLENDMODE_BLEND);
+    SDL_SetRenderDrawColor(window->sdl_renderer, color.r, color.g, color.b, color.a);
+
+    while (offsety >= offsetx) {
+        SDL_RenderDrawLine(window->sdl_renderer, pos.x - offsety, pos.y + offsetx, pos.x + offsety, pos.y + offsetx);
+        SDL_RenderDrawLine(window->sdl_renderer, pos.x - offsetx, pos.y + offsety, pos.x + offsetx, pos.y + offsety);
+        SDL_RenderDrawLine(window->sdl_renderer, pos.x - offsetx, pos.y - offsety, pos.x + offsetx, pos.y - offsety);
+        SDL_RenderDrawLine(window->sdl_renderer, pos.x - offsety, pos.y - offsetx, pos.x + offsety, pos.y - offsetx);
+
+        if (d >= 2 * offsetx) 
+        {
+            d -= 2*offsetx + 1;
+            offsetx +=1;
+        }
+        else if (d < 2 * ((int)radius - offsety)) 
+        {
+            d += 2 * offsety - 1;
+            offsety -= 1;
+        }
+        else 
+        {
+            d += 2 * (offsety - offsetx - 1);
+            offsety -= 1;
+            offsetx += 1;
+        }
+    }
 }
 
 void
 heimdall_draw_circle(window_t* window, vec2_t pos, unsigned int radius, color_t color)
 {
     HEIMDALL_IS_NULL_WINDOW(window);
-    HEIMDALL_IS_POS_CORRECT(pos);
 
-    NETLORE_NOT_IMPLEMENTED();
+    int d       = radius - 1;
+    int offsety = radius;
+    int offsetx = 0;
+
+    SDL_SetRenderDrawBlendMode(window->sdl_renderer, 
+                               (color.a == 255) 
+                                    ? SDL_BLENDMODE_NONE 
+                                    : SDL_BLENDMODE_BLEND);
+    SDL_SetRenderDrawColor(window->sdl_renderer, color.r, color.g, color.b, color.a);
+
+    while (offsety >= offsetx) 
+    {
+        SDL_RenderDrawPoint(window->sdl_renderer, pos.x + offsetx, pos.y + offsety);
+        SDL_RenderDrawPoint(window->sdl_renderer, pos.x + offsety, pos.y + offsetx);
+        SDL_RenderDrawPoint(window->sdl_renderer, pos.x - offsetx, pos.y + offsety);
+        SDL_RenderDrawPoint(window->sdl_renderer, pos.x - offsety, pos.y + offsetx);
+        SDL_RenderDrawPoint(window->sdl_renderer, pos.x + offsetx, pos.y - offsety);
+        SDL_RenderDrawPoint(window->sdl_renderer, pos.x + offsety, pos.y - offsetx);
+        SDL_RenderDrawPoint(window->sdl_renderer, pos.x - offsetx, pos.y - offsety);
+        SDL_RenderDrawPoint(window->sdl_renderer, pos.x - offsety, pos.y - offsetx);
+
+        if (d >= 2*offsetx) 
+        {
+            d -= 2*offsetx + 1;
+            offsetx +=1;
+        }
+        else if (d < 2 * ((int)radius - offsety)) 
+        {
+            d += 2 * offsety - 1;
+            offsety -= 1;
+        }
+        else 
+        {
+            d += 2 * (offsety - offsetx - 1);
+            offsety -= 1;
+            offsetx += 1;
+        }
+    }
 }
 
 void
@@ -132,15 +195,13 @@ heimdall_draw_line(window_t* window, vec2_t start, vec2_t end, color_t color)
 void
 heimdall_surface_draw_fill_rect(SDL_Surface* surface, vec2_t pos, size2_t size, color_t color)
 {
-    HEIMDALL_IS_POS_CORRECT(pos);
-
     SDL_SetSurfaceBlendMode(surface, 
                             (color.a == 255) 
                                 ? SDL_BLENDMODE_NONE 
                                 : SDL_BLENDMODE_BLEND);
 
-    SDL_Rect rect = { .x = (int)pos.x,  .y = (int)pos.y, 
-                      .w = (int)size.w, .h = (int)size.h };
+    SDL_Rect rect = { .x = pos.x,  .y = pos.y, 
+                      .w = size.w, .h = size.h };
     SDL_FillRect(surface, &rect, SDL_MapRGBA(surface->format, color.r, color.g, color.b, color.a));
 }
 
@@ -152,10 +213,10 @@ heimdall_surface_draw_rect(SDL_Surface* surface, vec2_t pos, size2_t size, color
                                 ? SDL_BLENDMODE_NONE 
                                 : SDL_BLENDMODE_BLEND);
 
-    SDL_Rect rect        = { .x = (int)pos.x,  .y = (int)pos.y, 
-                             .w = (int)size.w, .h = (int)size.h };
-    SDL_Rect border_rect = { .x = (int)pos.x,  .y = (int)pos.y, 
-                             .w = (int)size.w, .h = 1           };
+    SDL_Rect rect        = { .x = pos.x,  .y = pos.y, 
+                             .w = size.w, .h = size.h };
+    SDL_Rect border_rect = { .x = pos.x,  .y = pos.y, 
+                             .w = size.w, .h = 1           };
 
     unsigned int num_color = SDL_MapRGBA(surface->format, color.r, color.g, color.b, color.a);
 
@@ -180,16 +241,12 @@ heimdall_surface_draw_rect(SDL_Surface* surface, vec2_t pos, size2_t size, color
 void
 heimdall_surface_draw_fill_circle(SDL_Surface* surface, vec2_t pos, unsigned int radius, color_t color)
 {
-    HEIMDALL_IS_POS_CORRECT(pos);
-
     NETLORE_NOT_IMPLEMENTED();
 }
 
 void
 heimdall_surface_draw_circle(SDL_Surface* surface, vec2_t pos, unsigned int radius, color_t color)
 {
-    HEIMDALL_IS_POS_CORRECT(pos);
-
     NETLORE_NOT_IMPLEMENTED();
 }
 

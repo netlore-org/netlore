@@ -27,36 +27,33 @@
  *  - https://github.com/netlore-org/netlore
  */
 
-# include <netlore/netlore.h>
+#include <SDL2/SDL_events.h>
+#include <netlore/netlore.h>
 
-# include <netlore/bolly/heimdall/heimdall_ui.h>
-# include <netlore/bolly/heimdall/components/heimdall_text.h>
+#include <netlore/bolly/heimdall/components/heimdall_text.h>
+#include <netlore/bolly/heimdall/heimdall_window.h>
+#include <netlore/bolly/heimdall/heimdall_font.h>
+#include <netlore/bolly/heimdall/heimdall_ui.h>
+#include <netlore/bolly/heimdall/heimdall_fm.h>
+
+#include <SDL2/SDL.h>
 
 typedef struct __component_t component_t;
 
 void
 heimdall_text_render(window_t* window, component_t* component)
 {   
+    heimdall_render_fontf(window, component->text.text_size, 
+                          component->text.text_color, 
+                          component->pos, component->text.text_value);
 
+    // TODO: make text selection
 }
 
 void
 heimdall_text_event(window_t* window, component_t* component, SDL_Event event)
 {
-    // if (event.button.state != SDL_BUTTON_LEFT || event.motion.state != SDL_BUTTON_LMASK)
-    //     return;
 
-    // if (event.type == SDL_MOUSEMOTION)
-    // {
-
-    // }
-
-    // if (event.type == SDL_MOUSEBUTTONDOWN)
-    // {
-    //     component->text.is_selected = true;
-    //     component->text.lines_selected = 0;
-    //     component->text.each_line_size = (int[])NULL;
-    // }
 }
 
 void

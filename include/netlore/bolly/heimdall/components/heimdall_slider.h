@@ -27,48 +27,38 @@
  *  - https://github.com/netlore-org/netlore
  */
 
-#ifndef __NETLORE_HEIMDALL_WINDOW
-#define __NETLORE_HEIMDALL_WINDOW
-
-# include <netlore/bolly/heimdall/heimdall_utils.h>
-# include <netlore/bolly/heimdall/heimdall_rgb.h>
+#ifndef __NETLORE_HEIMDALL_COMPONENTS_SLIDER
+#define __NETLORE_HEIMDALL_COMPONENTS_SLIDER
 
 # include <netlore/netlore.h>
-# include <SDL2/SDL.h>
 
-struct __window_t;
-struct __ui_t;
+# include <netlore/bolly/heimdall/heimdall_rgb.h>
 
-typedef void (*HEIMDALL_INPUT_FUNC) (struct __window_t* window, SDL_Event event);
-typedef void (*HEIMDALL_RENDER_FUNC)(struct __window_t* window);
+# include <SDL2/SDL_ttf.h>
 
-typedef struct __window_t {
-    SDL_Window*   sdl_window;
-    SDL_Renderer* sdl_renderer;
+# define HEIMDALL_COMPONENT_SLIDER 0x04
 
-    color_t bg;
-    color_t fg;
-    
-    bool window_loop_render;
-    bool window_loop;
+typedef struct __component_t component_t;
+typedef struct __window_t window_t;
 
-    HEIMDALL_RENDER_FUNC render_func;
-    HEIMDALL_INPUT_FUNC  input_func;
+typedef void (*SLIDER_CALLBACK_FUNC)(component_t* component, int event_type);
 
-    unsigned long frames;
-    unsigned long fps;
-    clock_t       last_tick; 
+typedef struct __component_slider_t {
+    double slider_min_value;
+    double slider_max_value;
+    double slider_value;
 
-    struct __ui_t* ui;
-} window_t;
+    color_t slider_handler_color;
+    color_t slider_background;
+    color_t slider_color;
 
-void heimdall_initialize();
+    bool handler_is_dragged;
+} component_slider_t;
 
-window_t* heimdall_initalize_window(const char* window_title, size2_t window_size,
-                                    color_t fg, color_t bg);
+void heimdall_slider_render(window_t* window, component_t* component);
 
-void heimdall_window_loop(window_t* window);
+void heimdall_slider_event(window_t* window, component_t* component, SDL_Event event);
 
-size2_t heimdall_window_get_size(window_t* window);
+void heimdall_slider_init(window_t* window, component_t* component);
 
-#endif /* __NETLORE_HEIMDALL_WINDOW */
+#endif /* __NETLORE_HEIMDALL_COMPONENTS_SLIDER */

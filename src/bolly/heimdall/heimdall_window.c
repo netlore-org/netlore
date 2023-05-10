@@ -27,6 +27,7 @@
  *  - https://github.com/netlore-org/netlore
  */
 
+#include <SDL2/SDL_thread.h>
 #include <netlore/bolly/heimdall/heimdall_geometry.h>
 #include <netlore/bolly/heimdall/heimdall_window.h>
 #include <netlore/bolly/heimdall/heimdall_events.h>
@@ -34,6 +35,7 @@
 #include <netlore/bolly/heimdall/heimdall_font.h>
 #include <netlore/bolly/heimdall/heimdall_rgb.h>
 #include <netlore/bolly/heimdall/heimdall_fm.h>
+#include <netlore/bolly/heimdall/heimdall_ui.h>
 
 #include <netlore/netlore.h>
 
@@ -117,15 +119,37 @@ heimdall_window_fps(window_t* window)
     }
 }
 
+int
+heimdall_event_loop(void* data)
+{
+    window_t* window = ((window_t*)data);
+
+    while (!window->window_loop)
+        heimdall_window_inputs(window);
+
+    return 0;
+}
+
 void 
 heimdall_window_loop(window_t* window)
 {
+    heimdall_handle_init_ui(window->ui);
+
+    SDL_CreateThread(heimdall_event_loop, "events", window);
+
     while (!window->window_loop)
     {
-        heimdall_window_inputs(window);
-        heimdall_window_clear(window);
-        window->render_func(window);
-        heimdall_window_swap_buffer(window);
+        if (window->frames % 5 == 0)
+        {
+            heimdall_window_clear(window);
+
+            window->render_func(window);
+            if (window->ui != NULL)
+                heimdall_handle_render_ui(window->ui);
+
+            heimdall_window_swap_buffer(window);
+        }
+
         heimdall_window_fps(window);
     }
 }

@@ -27,48 +27,30 @@
  *  - https://github.com/netlore-org/netlore
  */
 
-#ifndef __NETLORE_HEIMDALL_WINDOW
-#define __NETLORE_HEIMDALL_WINDOW
-
-# include <netlore/bolly/heimdall/heimdall_utils.h>
-# include <netlore/bolly/heimdall/heimdall_rgb.h>
+#ifndef __NETLORE_HEIMDALL_COMPONENTS_BOX
+#define __NETLORE_HEIMDALL_COMPONENTS_BOX
 
 # include <netlore/netlore.h>
-# include <SDL2/SDL.h>
+# include <netlore/bolly/heimdall/heimdall_rgb.h>
 
-struct __window_t;
-struct __ui_t;
+# include <SDL2/SDL_ttf.h>
 
-typedef void (*HEIMDALL_INPUT_FUNC) (struct __window_t* window, SDL_Event event);
-typedef void (*HEIMDALL_RENDER_FUNC)(struct __window_t* window);
+# define HEIMDALL_COMPONENT_BOX 0x06
 
-typedef struct __window_t {
-    SDL_Window*   sdl_window;
-    SDL_Renderer* sdl_renderer;
+typedef struct __component_t component_t;
+typedef struct __window_t window_t;
 
-    color_t bg;
-    color_t fg;
-    
-    bool window_loop_render;
-    bool window_loop;
+typedef void (*BOX_CALLBACK_FUNC)(component_t* component, int event_type);
 
-    HEIMDALL_RENDER_FUNC render_func;
-    HEIMDALL_INPUT_FUNC  input_func;
+typedef struct __component_box_t {
+    color_t background;
+    bool    filled;
+} component_box_t;
 
-    unsigned long frames;
-    unsigned long fps;
-    clock_t       last_tick; 
+void heimdall_box_render(window_t* window, component_t* component);
 
-    struct __ui_t* ui;
-} window_t;
+void heimdall_box_event(window_t* window, component_t* component, SDL_Event event);
 
-void heimdall_initialize();
+void heimdall_box_init(window_t* window, component_t* component);
 
-window_t* heimdall_initalize_window(const char* window_title, size2_t window_size,
-                                    color_t fg, color_t bg);
-
-void heimdall_window_loop(window_t* window);
-
-size2_t heimdall_window_get_size(window_t* window);
-
-#endif /* __NETLORE_HEIMDALL_WINDOW */
+#endif /* __NETLORE_HEIMDALL_COMPONENTS_BOX */

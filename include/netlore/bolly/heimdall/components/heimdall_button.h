@@ -31,19 +31,27 @@
 #define __NETLORE_HEIMDALL_COMPONENTS_BUTTON
 
 # include <netlore/netlore.h>
-# include <netlore/bolly/heimdall/heimdall_window.h>
-# include <netlore/bolly/heimdall/heimdall_ui.h>
+# include <netlore/bolly/heimdall/heimdall_rgb.h>
 
 # include <SDL2/SDL_ttf.h>
 
 # define HEIMDALL_COMPONENT_BUTTON 0x00
 
-typedef struct __component_button_t {
-
-} component_button_t;
-
 typedef struct __component_t component_t;
 typedef struct __window_t window_t;
+
+typedef void (*BUTTON_CALLBACK_FUNC)(component_t* component, int event_type);
+
+typedef struct __component_button_t {
+    color_t button_foreground;
+    color_t button_background;
+    color_t button_border;
+
+    bool button_default_colors;
+    char* button_value;
+
+    BUTTON_CALLBACK_FUNC callback;
+} component_button_t;
 
 void heimdall_button_render(window_t* window, component_t* component);
 

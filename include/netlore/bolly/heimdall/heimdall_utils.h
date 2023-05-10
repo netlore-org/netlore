@@ -44,4 +44,7 @@ vec2_t heimdall_create_vec2(int x, int y);
 
 size2_t heimdall_create_size2(int w, int h);
 
+bool heimdall_check_collision_box(int x1, int y1, int w1, int h1, 
+                                  int x2, int y2, int w2, int h2);
+
 #endif /* __NETLORE_HEIMDALL_UTILS */

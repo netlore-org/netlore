@@ -2,9 +2,12 @@
     - [X] geometry (./src/heimdall/heimdall_geometry.c)
     - [X] font manager (./src/heimdall/heimdall_fm.c)
     - [X] font renderer (./src/heimdall/heimdall_font.c)
-    - [ ] create a simple UI manager
-    - [ ] create some UI components like
-        - [ ] button
-        - [ ] input
-        - [ ] text with text selection
+    - [X] create a simple UI manager
+    - [x] create some UI components like
+        - [X] button
+        - [X] input
+        - [X] image
+        - [X] text with text selection
+        - [X] slidebar
+        - [X] checkbox
     - [ ] start working on web content

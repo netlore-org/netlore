@@ -21,37 +21,26 @@
  */
 
 /*
- * This code is part of Heimdall (UI & Window Manager)
- * Component of Netlore project that can be found at 
- * the github repository at:
+ * This code is part of Njord (HTML, CSS Parser) Component
+ * of Netlore project that can be found at the github
+ * repository at:
  *  - https://github.com/netlore-org/netlore
  */
 
-#include <netlore/bolly/heimdall/heimdall_utils.h>
-
+#include <netlore/netlore_utils.h>
 #include <netlore/netlore.h>
 
-vec2_t
-heimdall_create_vec2(int x, int y)
-{
-    return ((vec2_t){ 
-        .x = x, 
-        .y = y 
-    });
-}
+#include <netlore/bolly/njord/njord_html_tok.h>
+#include <netlore/bolly/njord/njord_html.h>
+#include <netlore/bolly/njord/njord_node.h>
+#include <netlore/bolly/njord/njord_dom.h>
 
-size2_t
-heimdall_create_size2(int w, int h)
+html_token_t* 
+njord_create_token(html_token_kind_t kind, char* value)
 {
-    return ((size2_t){ 
-        .w = w, 
-        .h = h 
-    });
-}
+    html_token_t* token = (html_token_t*)netlore_calloc(1, sizeof(html_token_t));
+    token->value = netlore_create_copy_string(value);
+    token->kind  = kind;
 
-bool 
-heimdall_check_collision_box(int x1, int y1, int w1, int h1, 
-                             int x2, int y2, int w2, int h2) 
-{
-    return x1 + w1 > x2 && x1 < x2 + w2 && y1 + h1 > y2 && y1 < y2 + h2;
+    return token;
 }

@@ -30,6 +30,7 @@
 #include <netlore/bolly/heimdall/heimdall_window.h>
 #include <netlore/bolly/heimdall/heimdall_events.h>
 #include <netlore/bolly/heimdall/heimdall_utils.h>
+#include <netlore/bolly/heimdall/heimdall_ui.h>
 
 #include <netlore/netlore.h>
 
@@ -54,4 +55,8 @@ heimdall_window_inputs(window_t* window)
         window->window_loop = true;
     }
 
+    if (event.type == SDL_MOUSEBUTTONDOWN)
+        NETLORE_DEBUG("clicked at %ux%u", event.button.x, event.button.y);
+
+    heimdall_handle_event_ui(window->ui, event);
 }

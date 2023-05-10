@@ -31,17 +31,17 @@
 #define __NETLORE_HEIMDALL_COMPONENTS_TEXT
 
 # include <netlore/netlore.h>
-# include <netlore/bolly/heimdall/heimdall_window.h>
-# include <netlore/bolly/heimdall/heimdall_ui.h>
+
+# include <netlore/bolly/heimdall/heimdall_rgb.h>
 
 # include <SDL2/SDL_ttf.h>
 
 typedef struct __component_text_t {
-    char* text_value;
+    char*   text_value;
+    color_t text_color;
+    int     text_size;
 
     bool   is_selected;
-    int    lines_selected;
-    int    each_line_size[];
 } component_text_t;
 
 typedef struct __component_t component_t;

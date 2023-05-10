@@ -25,7 +25,7 @@
 # messages in terminal each second
 
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c99 -I./include -O3 -D __NETLORE_FPS_DEBUG__
+CFLAGS = -Wall -Wextra -std=c99 -I./include -D __NETLORE_FPS_DEBUG__
 LDFLAGS = -lcurl -lSDL2 -lSDL2_ttf -lSDL2_image
 
 SRC_DIR = ./src
@@ -37,10 +37,12 @@ TARGET = netlore
 all: $(TARGET) clean
 
 $(TARGET): $(OBJ_FILES)
-	$(CC) $(LDFLAGS) $^ -o $@
+	@ $(CC) $(LDFLAGS) $^ -o $@
+	@echo "+ $(CC) $(LDFLAGS) $^ -o $@"
 
 $(SRC_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	@ $(CC) $(CFLAGS) -c $< -o $@
+	@echo "+ $(CC) $(CFLAGS) -c $< -o $@"
 
 clean:
 	rm -f $(SRC_DIR)/*.o $(SRC_DIR)/**/*.o $(SRC_DIR)/**/**/*.o $(SRC_DIR)/**/**/**/*.o

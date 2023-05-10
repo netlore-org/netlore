@@ -6,7 +6,7 @@
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * furnished to do so, subject to the following conditions: 
  * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
@@ -20,38 +20,40 @@
  * THE SOFTWARE.
  */
 
-/*
- * This code is part of Heimdall (UI & Window Manager)
- * Component of Netlore project that can be found at 
- * the github repository at:
- *  - https://github.com/netlore-org/netlore
- */
-
-#include <netlore/bolly/heimdall/heimdall_utils.h>
-
 #include <netlore/netlore.h>
+#include <netlore/netlore_utils.h>
 
-vec2_t
-heimdall_create_vec2(int x, int y)
+char* 
+netlore_create_copy_string(const char* str)
 {
-    return ((vec2_t){ 
-        .x = x, 
-        .y = y 
-    });
+    char* allocated = netlore_calloc(strlen(str) + 1, sizeof(char));
+    memcpy(allocated, str, strlen(str) + 1);
+
+    return allocated;
 }
 
-size2_t
-heimdall_create_size2(int w, int h)
+char* 
+netlore_gen_spacing(int spacing_amount)
 {
-    return ((size2_t){ 
-        .w = w, 
-        .h = h 
-    });
+    char* spacing = (char*)netlore_calloc((spacing_amount * 4) + 1, sizeof(char));
+
+    for (int i = 0; i < spacing_amount; i++)
+        strcat(spacing, "    ");
+
+    return spacing;
 }
 
-bool 
-heimdall_check_collision_box(int x1, int y1, int w1, int h1, 
-                             int x2, int y2, int w2, int h2) 
+char*
+netlore_append_to_alloc_string(char* str, const char c)
 {
-    return x1 + w1 > x2 && x1 < x2 + w2 && y1 + h1 > y2 && y1 < y2 + h2;
+    /* Reallocate string with 2 bytes more that there 
+     * already is and then append char to the end
+     * and end discriminator */
+    size_t str_length = (size_t)strlen(str);
+
+    str = (char*)netlore_realloc(str, (str_length + 2) * sizeof(char));
+    str[str_length    ] = c;
+    str[str_length + 1] = 0;
+
+    return str;
 }

@@ -31,19 +31,31 @@
 #define __NETLORE_HEIMDALL_COMPONENTS_INPUT
 
 # include <netlore/netlore.h>
-# include <netlore/bolly/heimdall/heimdall_window.h>
-# include <netlore/bolly/heimdall/heimdall_ui.h>
+
+# include <netlore/bolly/heimdall/heimdall_rgb.h>
 
 # include <SDL2/SDL_ttf.h>
 
 # define HEIMDALL_COMPONENT_INPUT 0x01
 
-typedef struct __component_input_t {
-
-} component_input_t;
-
 typedef struct __component_t component_t;
 typedef struct __window_t window_t;
+
+typedef void (*INPUT_CALLBACK_FUNC)(component_t* component, int event_type);
+
+typedef struct __component_input_t {
+    int   input_value_length;
+    char* input_value;
+
+    color_t input_foreground;
+    color_t input_background;
+    color_t input_border;
+
+    bool input_default_colors;
+    bool input_typing;
+
+    INPUT_CALLBACK_FUNC callback;
+} component_input_t;
 
 void heimdall_input_render(window_t* window, component_t* component);
 

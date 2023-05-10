@@ -21,37 +21,43 @@
  */
 
 /*
- * This code is part of Heimdall (UI & Window Manager)
- * Component of Netlore project that can be found at 
- * the github repository at:
+ * This code is part of Njord (HTML, CSS Parser) Component
+ * of Netlore project that can be found at the github
+ * repository at:
  *  - https://github.com/netlore-org/netlore
  */
 
-#include <netlore/bolly/heimdall/heimdall_utils.h>
+#ifndef __NETLORE_NJORD_DOM
+#define __NETLORE_NJORD_DOM
 
 #include <netlore/netlore.h>
 
-vec2_t
-heimdall_create_vec2(int x, int y)
-{
-    return ((vec2_t){ 
-        .x = x, 
-        .y = y 
-    });
-}
+#include <netlore/bolly/heimdall/heimdall_window.h>
+#include <netlore/bolly/freja/freja_request.h>
+#include <netlore/bolly/njord/njord_node.h>
 
-size2_t
-heimdall_create_size2(int w, int h)
-{
-    return ((size2_t){ 
-        .w = w, 
-        .h = h 
-    });
-}
+typedef struct __dom_node_t dom_node_t;
 
-bool 
-heimdall_check_collision_box(int x1, int y1, int w1, int h1, 
-                             int x2, int y2, int w2, int h2) 
-{
-    return x1 + w1 > x2 && x1 < x2 + w2 && y1 + h1 > y2 && y1 < y2 + h2;
-}
+typedef struct __dom_t {
+    char* title;
+    request_t* request;
+
+    dom_node_t* root_node;
+    window_t*   window;
+} dom_t;
+
+dom_t* njord_create_dom(window_t* window);
+
+void njord_set_request_dom(dom_t* dom, request_t* req);
+void njord_set_title_dom(dom_t* dom, char* title);
+
+void njord_update_window_title_by_dom(dom_t* dom, window_t* window);
+
+dom_node_t* njord_find_node_in_dom_by_content(dom_t* dom, char* content);
+dom_node_t* njord_find_node_in_dom_by_class(dom_t* dom, char* class_name);
+dom_node_t* njord_find_node_in_dom_by_tag(dom_t* dom, char* tag);
+dom_node_t* njord_find_node_in_dom_by_id(dom_t* dom, char* id);
+
+void njord_dump_tree(dom_t* dom, dom_node_t* start_node, int spacing);
+
+#endif /* __NETLORE_NJORD_DOM */
