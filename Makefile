@@ -37,8 +37,8 @@ TARGET = netlore
 all: $(TARGET) clean
 
 $(TARGET): $(OBJ_FILES)
-	@ $(CC) $(LDFLAGS) $^ -o $@
-	@echo "+ $(CC) $(LDFLAGS) $^ -o $@"
+	@ $(CC) $^ $(LDFLAGS) -o $@
+	@echo "+ $(CC) $^ $(LDFLAGS) -o $@"
 
 $(SRC_DIR)/%.o: $(SRC_DIR)/%.c
 	@ $(CC) $(CFLAGS) -c $< -o $@
