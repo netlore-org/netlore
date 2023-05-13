@@ -25,8 +25,8 @@
 # messages in terminal each second
 
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c99 -I./include -D __NETLORE_FPS_DEBUG__
-LDFLAGS = -lcurl -lSDL2 -lSDL2_ttf -lSDL2_image
+CFLAGS = -Wall -Wextra -std=c99 -I./include -D __NETLORE_FPS_DEBUG__ $(curl-config --cflags)
+LDFLAGS = -lcurl -lSDL2 -lSDL2_ttf -lSDL2_image $(curl-config --libs)
 
 SRC_DIR = ./src
 SRC_FILES = $(wildcard $(SRC_DIR)/*.c) $(wildcard $(SRC_DIR)/**/*.c) $(wildcard $(SRC_DIR)/**/**/*.c) $(wildcard $(SRC_DIR)/**/**/**/*.c)
