@@ -13,5 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: install
+      run: bash scripts/install-ubuntu.sh
     - name: make
       run: make
