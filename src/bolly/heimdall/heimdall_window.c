@@ -162,3 +162,15 @@ heimdall_window_get_size(window_t* window)
 
     return size;
 }
+
+void
+heimdall_clean_up_window(window_t* window)
+{
+    SDL_Quit();
+    IMG_Quit();
+    TTF_Quit();
+
+    netlore_free(window);
+
+    NETLORE_DEBUG("closed all sdl libraries and unallocated window memory");
+}

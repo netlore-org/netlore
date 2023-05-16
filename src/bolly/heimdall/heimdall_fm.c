@@ -93,6 +93,7 @@ heimdall_fm_get_max_size_font()
     return max_size;
 }
 
+void heimdall_clean_up_fonts();
 TTF_Font* 
 heimdall_get_default_font(int size)
 {
@@ -103,4 +104,13 @@ heimdall_get_default_font(int size)
     }
 
     return fonts[size - REMOVE_FIRST_SIZES];
+}
+
+void 
+heimdall_clean_up_fonts()
+{
+    for (int i = 0; i < fonts_len; i++)
+        TTF_CloseFont(fonts[i]);
+
+    NETLORE_DEBUG("closed all fonts that was in use");
 }

@@ -147,4 +147,7 @@ main(int argc, char** argv)
     njord_parse_html(lex, dom);
 
     heimdall_window_loop(window);
+    
+    heimdall_clean_up_fonts();
+    heimdall_clean_up_window(window);
 }

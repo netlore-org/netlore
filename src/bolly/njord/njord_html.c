@@ -140,7 +140,7 @@ njord_tokenize_html(const char* value)
                     /* Append the character to allocated token string 
                      * and then skip to the next character in the
                      * html text buffer */
-                    netlore_append_to_alloc_string(tag_name_token->value, lexer->curr_char);
+                    tag_name_token->value = netlore_append_to_alloc_string(tag_name_token->value, lexer->curr_char);
                     njord_html_advance(lexer, 1);
                 }
                 njord_append_token(lexer, tag_name_token);
@@ -212,7 +212,7 @@ njord_tokenize_html(const char* value)
                     /* Append the character to allocated token string 
                      * and then skip to the next character in the
                      * html text buffer */
-                    netlore_append_to_alloc_string(attr_name_token->value, lexer->curr_char);
+                    attr_name_token->value = netlore_append_to_alloc_string(attr_name_token->value, lexer->curr_char);
                     njord_html_advance(lexer, 1);
                 }
                 njord_append_token(lexer, attr_name_token);
@@ -262,7 +262,7 @@ njord_tokenize_html(const char* value)
                             break;
 
                         /* Allocate character to string which is allocated */
-                        netlore_append_to_alloc_string(attr_value_token->value, lexer->curr_char);
+                        attr_value_token->value = netlore_append_to_alloc_string(attr_value_token->value, lexer->curr_char);
                         njord_html_advance(lexer, 1);
                     }
 
@@ -311,7 +311,7 @@ njord_tokenize_html(const char* value)
 
                 /* Append character to string */
                 if (already_character == true)
-                    netlore_append_to_alloc_string(tag_content->value, lexer->curr_char);
+                    tag_content->value = netlore_append_to_alloc_string(tag_content->value, lexer->curr_char);
                 njord_html_advance(lexer, 1);
             }
             njord_append_token(lexer, tag_content);
@@ -373,6 +373,8 @@ njord_parse_html(html_lexer_t* lexer, dom_t* dom)
     int stack_len = 0;
 
     stack[0] = dom->root_node;
+
+    NETLORE_DEBUG("parsing html tokens into a DOM Tree");
 
     for (int i = 0; i < lexer->tokens_len; i++)
     {
@@ -437,8 +439,6 @@ njord_parse_html(html_lexer_t* lexer, dom_t* dom)
                     dom_node_t* stack_element = NULL;
                     int i = 0;
                         
-                    printf("%d\n", i);
-
                     for (i = stack_len; i >= 0; i--)
                     {
                         stack_element = stack[i];
@@ -522,5 +522,5 @@ njord_parse_html(html_lexer_t* lexer, dom_t* dom)
         }
     }
 
-    njord_dump_tree(dom, dom->root_node, 0);
+    // njord_dump_tree(dom, dom->root_node, 0);
 }

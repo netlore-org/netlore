@@ -42,4 +42,6 @@ int         heimdall_fm_get_max_size_font();
 
 TTF_Font* heimdall_get_default_font(int size);
 
+void heimdall_clean_up_fonts();
+
 #endif /* __NETLORE_HEIMDALL_FONT_MANAGER */

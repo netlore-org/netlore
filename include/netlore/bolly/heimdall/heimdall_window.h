@@ -71,4 +71,6 @@ void heimdall_window_loop(window_t* window);
 
 size2_t heimdall_window_get_size(window_t* window);
 
+void heimdall_clean_up_window(window_t* window);
+
 #endif /* __NETLORE_HEIMDALL_WINDOW */
