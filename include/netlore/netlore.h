@@ -38,8 +38,8 @@
 #  include <curl/curl.h>
 # endif
 
-# define __netlore_ERROR_HEADER "\e[0;33m%p\e[0;0m %s: \e[0;31merror\e[0;0m: "
-# define __netlore_DEBUG_HEADER "\e[0;33m%p\e[0;0m %s: \e[0;32mdebug\e[0;0m: "
+# define __netlore_ERROR_HEADER "\e[0;34m%p\e[0;0m %s: \e[0;31merror\e[0;0m: "
+# define __netlore_DEBUG_HEADER "\e[0;34m%p\e[0;0m %s: \e[0;32mdebug\e[0;0m: "
 
 # define NETLORE_ERROR(fmt, ...) ({   \
     printf(__netlore_ERROR_HEADER,    \
@@ -71,7 +71,7 @@
 # define netlore_realloc realloc
 # define netlore_free    free
 
-# define NETLORE_VERSION "0.2.4"
+# define NETLORE_VERSION "0.2.6"
 # define NETLORE_USE(x)  ((void)x)
 
 # define NETLORE_NO_NULL_EXIT(x) (             \

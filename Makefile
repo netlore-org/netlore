@@ -26,7 +26,7 @@
 
 CC = gcc
 CFLAGS = -g -Wall -Wextra -std=c99 -I./include -D __NETLORE_FPS_DEBUG__
-LDFLAGS = -g -lcurl -lSDL2 -lSDL2_ttf -lSDL2_image 
+LDFLAGS = -g -lcurl -lSDL2 -lSDL2_ttf -lSDL2_image
 
 # -fsanitize=address
 

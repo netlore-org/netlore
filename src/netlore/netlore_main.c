@@ -135,14 +135,7 @@ main(int argc, char** argv)
 
     dom_t* dom = njord_create_dom(window);
 
-    html_lexer_t* lex = njord_tokenize_html("<html>\n\
-<head>\n\
-    <title>Example Netlore site</title>\n\
-</head>\n\
-<body>\n\
-    <span>Hello, World</span>\n\
-</body>\n\
-</html>");
+    html_lexer_t* lex = njord_tokenize_html("<span class=\"title_class title_class2\" id=\"title_id\">Hello, World!</span>");
 
     njord_parse_html(lex, dom);
 

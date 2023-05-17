@@ -475,8 +475,101 @@ njord_parse_html(html_lexer_t* lexer, dom_t* dom)
             }
             else if ((token->kind == ATTR_NAME || token->kind == ATTR_VALUE) && tag_end == false)
             {
-                // Parser attributes...
-            
+                dom_node_t* parent_node = njord_parse_get_last_stack_element(dom, stack, stack_len);
+
+                if (parent_node == NULL)
+                    parent_node = dom->root_node;
+
+                stack_len++;
+                stack[stack_len] = njord_create_node(tag_name, "", parent_node, attrs, 
+                                                        njord_create_render_box_empty(), NULL);
+                
+                bool expect_token_name  = true;
+                bool expect_token_value = false;
+                bool expect_token_eq    = false;
+
+                dom_node_t* node = stack[stack_len];
+
+                while (true)
+                {
+                    if (!(token->kind == ATTR_NAME || token->kind == ATTR_VALUE || token->kind == ATTR_EQ))
+                        break;
+                    
+
+                    if (expect_token_name)
+                    {
+                        if (token->kind == ATTR_NAME)
+                        {
+                            if (token->value[0] == '\0')
+                            {
+                                i++;
+                                token = lexer->tokens[i];
+                                continue;
+                            }
+
+                            njord_add_node_attribute(node, token->value, "");
+
+                            i++;
+                            token = lexer->tokens[i];
+
+                            expect_token_name  = false;
+                            expect_token_value = false;
+                            expect_token_eq    = true;
+                            continue;
+                        }
+                    }
+                    else if (expect_token_value)
+                    {
+                        if (token->kind == ATTR_VALUE)
+                        {
+                            node->attrs[node->attrs_len - 1]->value = netlore_create_copy_string(token->value);
+                            i++;
+                            token = lexer->tokens[i];
+
+                            expect_token_name  = true;
+                            expect_token_value = false;
+                            expect_token_eq    = false;
+                            continue;
+                        }
+                    }
+                    else if (expect_token_eq)
+                    {
+                        if (token->kind == ATTR_EQ)
+                        {
+                            i++;
+                            token = lexer->tokens[i];
+
+                            expect_token_name  = false;
+                            expect_token_value = true;
+                            expect_token_eq    = false;
+                            continue;
+                        }
+                        else if (token->kind == ATTR_NAME)
+                        {
+                            if (token->value[0] == '\0')
+                            {
+                                i++;
+                                token = lexer->tokens[i];
+                                continue;
+                            }
+                            
+                            njord_add_node_attribute(node, token->value, "");
+
+                            i++;
+                            token = lexer->tokens[i];
+
+                            expect_token_name  = false;
+                            expect_token_value = false;
+                            expect_token_eq    = true;
+                            continue;
+                        }
+                    }
+
+                    i++;
+                    token = lexer->tokens[i];
+                }
+                
+                njord_add_children(parent_node, stack[stack_len]);
             }
             else 
             {
@@ -520,6 +613,8 @@ njord_parse_html(html_lexer_t* lexer, dom_t* dom)
                                                  njord_create_render_box_empty(), NULL);
             njord_add_children(parent_node, node);
         }
+        else 
+            continue;
     }
 
     // njord_dump_tree(dom, dom->root_node, 0);
