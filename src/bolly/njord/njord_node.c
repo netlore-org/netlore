@@ -315,7 +315,7 @@ njord_get_attrs_as_string(attribute_t** attrs, size_t attrs_len)
 {
     char* buf = (char*)netlore_calloc(1024 * 5, sizeof(char));
 
-    for (int i = 0; i < attrs_len; i++)
+    for (int i = 0; i < (int)attrs_len; i++)
     {
         /* Name */
         strcat(buf, "\"\e[0;34m");
@@ -325,7 +325,7 @@ njord_get_attrs_as_string(attribute_t** attrs, size_t attrs_len)
         /* Value */
         strcat(buf, "\"");
         strcat(buf, attrs[i]->value);
-        if (i != attrs_len - 1)
+        if (i != (int)(attrs_len - 1))
             strcat(buf, "\", ");
         else
             strcat(buf, "\"");

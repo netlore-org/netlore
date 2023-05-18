@@ -64,7 +64,7 @@ njord_tokenize_html(const char* value)
     NETLORE_DEBUG("input: \"%s\"", lexer->value);
 
     /* Start the for loops which will end at the end of lexer->value */
-    for (lexer->index = 0; lexer->index < strlen(lexer->value); lexer->index++)
+    for (lexer->index = 0; lexer->index < (int)strlen(lexer->value); lexer->index++)
     {
         /* Get the current character*/
         njord_html_advance(lexer, 0);

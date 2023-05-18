@@ -135,9 +135,15 @@ main(int argc, char** argv)
 
     dom_t* dom = njord_create_dom(window);
 
-    html_lexer_t* lex = njord_tokenize_html("<span class=\"title_class title_class2\" id=\"title_id\">Hello, World!</span>");
+    html_lexer_t* lex = njord_tokenize_html("<html>\n\
+<head>\n\
+</head>\n\
+<head>\n\
+</head>\n\
+</html>");
 
     njord_parse_html(lex, dom);
+    njord_dump_tree(dom, dom->root_node, 0);
 
     heimdall_window_loop(window);
     

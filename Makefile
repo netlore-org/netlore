@@ -34,17 +34,21 @@ SRC_DIR = ./src
 SRC_FILES = $(wildcard $(SRC_DIR)/*.c) $(wildcard $(SRC_DIR)/**/*.c) $(wildcard $(SRC_DIR)/**/**/*.c) $(wildcard $(SRC_DIR)/**/**/**/*.c)
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.c, $(SRC_DIR)/%.o, $(SRC_FILES))
 
+COMPILED_FILES = 0
+ALL_FILES = $(words $(SRC_FILES))
+
 TARGET = netlore
 
 all: $(TARGET) clean
 
 $(TARGET): $(OBJ_FILES)
-	@ $(CC) $^ $(LDFLAGS) -o $@
-	@echo "+ $(CC) $^ $(LDFLAGS) -o $@"
+	@$(CC) $^ $(LDFLAGS) -o $@
+	@echo "+ linking all the objects, created netlore"
 
 $(SRC_DIR)/%.o: $(SRC_DIR)/%.c
-	@ $(CC) $(CFLAGS) -c $< -o $@
-	@echo "+ $(CC) $(CFLAGS) -c $< -o $@"
+	@$(CC) $(CFLAGS) -c $< -o $@
+	@echo "+ [$(COMPILED_FILES)/$(ALL_FILES)] compiling $<..."
+	@$(eval COMPILED_FILES=$(shell echo $$(($(COMPILED_FILES)+1))))
 
 clean:
 	rm -f $(SRC_DIR)/*.o $(SRC_DIR)/**/*.o $(SRC_DIR)/**/**/*.o $(SRC_DIR)/**/**/**/*.o
