@@ -25,7 +25,7 @@
 # messages in terminal each second
 
 CC = gcc
-CFLAGS = -g -Wall -Wextra -std=c99 -I./include -D __NETLORE_FPS_DEBUG__
+CFLAGS = -g -Wall -Wextra -std=c99 -I./include
 LDFLAGS = -g -lcurl -lSDL2 -lSDL2_ttf -lSDL2_image
 
 # -fsanitize=address

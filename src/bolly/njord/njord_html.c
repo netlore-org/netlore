@@ -27,8 +27,6 @@
  *  - https://github.com/netlore-org/netlore
  */
 
-#include <ctype.h>
-#include <immintrin.h>
 #include <netlore/netlore_utils.h>
 #include <netlore/netlore.h>
 
@@ -36,7 +34,6 @@
 #include <netlore/bolly/njord/njord_html.h>
 #include <netlore/bolly/njord/njord_node.h>
 #include <netlore/bolly/njord/njord_dom.h>
-#include <sys/types.h>
 
 void 
 njord_append_token(html_lexer_t* lexer, html_token_t* token)
@@ -445,7 +442,7 @@ njord_parse_html(html_lexer_t* lexer, dom_t* dom)
 
                         if (stack_element == NULL)
                             continue;
-                        if (strcmp(stack_element->tag, tag_name))
+                        if (strcmp(stack_element->tag, tag_name) == 0)
                             break;
                     }
 

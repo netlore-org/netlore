@@ -68,7 +68,8 @@ What will I use while creating netlore, I can just answer C and go on with this 
 - [ ]  **Balder** (URL Parser)
     - [ ]  *Is URL correct*
     - [ ]  *Parse URL into structure*
-- [ ]  **Loki** (Rendering Engine)
+- [ ]  **Loki** (DOM Rendering Engine)
+    - [ ]  *Layout*
     - [ ]  *Render DOM*
 - [ ]  **Freja** (Network caller)
     - [ ]  *Request HTTPS host and get the HTML*

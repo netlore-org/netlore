@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 
+#include "netlore/bolly/loki/loki_layout.h"
 #include "netlore/netlore_utils.h"
 #include <netlore/bolly/freja/freja_request.h>
 #include <netlore/bolly/freja/freja_https.h>
@@ -40,6 +41,9 @@
 #include <netlore/bolly/heimdall/heimdall_rgb.h>
 #include <netlore/bolly/heimdall/heimdall_fm.h>
 #include <netlore/bolly/heimdall/heimdall_ui.h>
+
+#include <netlore/bolly/loki/loki_draw_dom.h>
+#include <netlore/bolly/loki/loki_layout.h>
 
 #include <netlore/bolly/njord/njord_style.h>
 #include <netlore/bolly/njord/njord_html.h>
@@ -138,12 +142,15 @@ main(int argc, char** argv)
     html_lexer_t* lex = njord_tokenize_html("<html>\n\
 <head>\n\
 </head>\n\
-<head>\n\
-</head>\n\
+<body>\n\
+    <span class=\"title\">Netlore!</span>\n\
+</body>\n\
 </html>");
 
     njord_parse_html(lex, dom);
     njord_dump_tree(dom, dom->root_node, 0);
+
+    loki_layout_dom(dom);
 
     heimdall_window_loop(window);
     

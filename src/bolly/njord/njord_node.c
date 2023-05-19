@@ -318,7 +318,7 @@ njord_get_attrs_as_string(attribute_t** attrs, size_t attrs_len)
     for (int i = 0; i < (int)attrs_len; i++)
     {
         /* Name */
-        strcat(buf, "\"\e[0;34m");
+        strcat(buf, "\e[0;34m\"");
         strcat(buf, attrs[i]->name);
         strcat(buf, "\"\e[0;0m: ");
 
