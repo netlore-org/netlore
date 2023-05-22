@@ -70,7 +70,7 @@ njord_tokenize_html(const char* value)
         {
             /* If the curr_char is < we add a new TAG_OPEN token
              * and set some important values up */
-            njord_append_token(lexer, njord_create_token(TAG_OPEN, "<"));
+            njord_append_token(lexer, njord_html_create_token(TAG_OPEN, "<"));
 
             lexer->tag_is_opened    = true;
             lexer->tag_expect_name  = true;
@@ -80,7 +80,7 @@ njord_tokenize_html(const char* value)
         {
             /* If the curr_char is > we add a new TAG_END token
              * and set some important values up */
-            njord_append_token(lexer, njord_create_token(TAG_END, ">"));  
+            njord_append_token(lexer, njord_html_create_token(TAG_END, ">"));  
 
             lexer->tag_expect_attrs   = false;
             lexer->tag_expect_name    = false;
@@ -101,7 +101,7 @@ njord_tokenize_html(const char* value)
              *  | end tag           |
              *  --------------------
              */
-            njord_append_token(lexer, njord_create_token(TAG_DIV, "/"));
+            njord_append_token(lexer, njord_html_create_token(TAG_DIV, "/"));
         }
         else if (lexer->tag_is_opened)
         {
@@ -122,7 +122,7 @@ njord_tokenize_html(const char* value)
                 /* Create a new token so we have an allocated string 
                  * token value which would be used to appending the
                  * tag name */
-                html_token_t* tag_name_token = njord_create_token(TAG_NAME, "");
+                html_token_t* tag_name_token = njord_html_create_token(TAG_NAME, "");
                 while (true)
                 {
                     /* If we hit any of these characters break the name
@@ -148,7 +148,7 @@ njord_tokenize_html(const char* value)
                 {
                     /* If the curr_char is > we add a new TAG_END token
                      * and set some important values up */
-                    njord_append_token(lexer, njord_create_token(TAG_END, ">"));  
+                    njord_append_token(lexer, njord_html_create_token(TAG_END, ">"));  
 
                     lexer->tag_expect_attrs = false;
                     lexer->tag_expect_name  = false;
@@ -169,7 +169,7 @@ njord_tokenize_html(const char* value)
                      *  | end tag           |
                      *  --------------------
                      */
-                    njord_append_token(lexer, njord_create_token(TAG_DIV, "/"));
+                    njord_append_token(lexer, njord_html_create_token(TAG_DIV, "/"));
                 }
                 else if (lexer->curr_char == ' ')
                 {
@@ -193,7 +193,7 @@ njord_tokenize_html(const char* value)
                 /* Create a new token so we have an allocated string 
                  * token value which would be used to appending the
                  * attribute name */
-                html_token_t* attr_name_token = njord_create_token(ATTR_NAME, "");
+                html_token_t* attr_name_token = njord_html_create_token(ATTR_NAME, "");
                 while (true)
                 {
                     /* If we hit any of these characters break the name
@@ -220,7 +220,7 @@ njord_tokenize_html(const char* value)
                 {
                     /* If the curr_char is > we add a new TAG_END token
                      * and set some important values up */
-                    njord_append_token(lexer, njord_create_token(TAG_END, ">"));  
+                    njord_append_token(lexer, njord_html_create_token(TAG_END, ">"));  
 
                     lexer->tag_expect_attrs   = false;
                     lexer->tag_expect_name    = false;
@@ -241,17 +241,17 @@ njord_tokenize_html(const char* value)
                      *  | end tag           |
                      *  --------------------
                      */
-                    njord_append_token(lexer, njord_create_token(TAG_DIV, "/"));
+                    njord_append_token(lexer, njord_html_create_token(TAG_DIV, "/"));
                 }
                 else if (lexer->curr_char == '=')
                 {
                     /* After TAG_NAME we expect an TAG_EQ which is just an 
                      * '=' character */
-                    njord_append_token(lexer, njord_create_token(ATTR_EQ, "="));
+                    njord_append_token(lexer, njord_html_create_token(ATTR_EQ, "="));
                     njord_html_advance(lexer, 2);
 
                     /* Collect TAG_VALUE after TAG_EQ */
-                    html_token_t* attr_value_token = njord_create_token(ATTR_VALUE, "");
+                    html_token_t* attr_value_token = njord_html_create_token(ATTR_VALUE, "");
                     while (true)
                     {
                         /* If we hit any of them just break the loop */
@@ -279,7 +279,7 @@ njord_tokenize_html(const char* value)
              *
              * </span>
              */
-            html_token_t* tag_content = njord_create_token(CONTENT, "");
+            html_token_t* tag_content = njord_html_create_token(CONTENT, "");
             
             /* This property check when the character is 
              * different than ' ' */
@@ -317,7 +317,7 @@ njord_tokenize_html(const char* value)
             {
                 /* If the curr_char is < we add a new TAG_OPEN token
                  * and set some important values up */
-                njord_append_token(lexer, njord_create_token(TAG_OPEN, "<"));
+                njord_append_token(lexer, njord_html_create_token(TAG_OPEN, "<"));
 
                 lexer->tag_is_opened    = true;
                 lexer->tag_expect_name  = true;
@@ -327,7 +327,7 @@ njord_tokenize_html(const char* value)
             {
                 /* If the curr_char is > we add a new TAG_END token
                  * and set some important values up */
-                njord_append_token(lexer, njord_create_token(TAG_END, ">"));  
+                njord_append_token(lexer, njord_html_create_token(TAG_END, ">"));  
 
                 lexer->tag_expect_attrs   = false;
                 lexer->tag_expect_name    = false;
@@ -348,6 +348,34 @@ njord_html_advance(html_lexer_t* html, int count)
     html->curr_char =  html->value[html->index];
 }
 
+void
+njord_is_node_style(dom_t* dom, dom_node_t* node)
+{
+    /* Does this node even represents <style> tag */
+    if (strcmp(node->tag, "style") != 0) return;
+
+    /* Get the CSS Style content, the easiest way
+     * to get it is just collecting the first children
+     * node and check does it represents content node */
+    if (node->childrens_len == 0   ) return;
+    if (node->childrens[0]  == NULL) return;
+
+    dom_node_t* first_children = node->childrens[0];
+
+    if (strcmp(first_children->tag, "__tag") == 0)
+    {
+        /* Now we know that this is a correct <style> tag,
+         * so we append it to the global dom field named
+         * style_nodes in which we store all css nodes.
+         * After HTML Parsing we will parse this css too
+         * and apply all styles to DOM Nodes */
+        dom->style_nodes[dom->style_nodes_len] = first_children;
+        dom->style_nodes_len++;
+
+        dom->style_nodes = netlore_realloc(dom->style_nodes, sizeof(dom_node_t*) * (dom->style_nodes_len + 1));
+    }
+}
+
 /* Simple function for getting the last stack element */
 dom_node_t*
 njord_parse_get_last_stack_element(dom_t* dom, dom_node_t* stack[1024], int stack_len)
@@ -363,6 +391,16 @@ njord_parse_get_last_stack_element(dom_t* dom, dom_node_t* stack[1024], int stac
     return NULL;
 }
 
+void
+njord_loop_through_node_styles(dom_t* dom, dom_node_t* node)
+{
+    for (int i = 0; i < (int)node->childrens_len; i++)
+    {
+        njord_is_node_style(dom, node->childrens[i]);
+        njord_loop_through_node_styles(dom, node->childrens[i]);
+    }
+}
+
 void 
 njord_parse_html(html_lexer_t* lexer, dom_t* dom)
 {
@@ -370,6 +408,9 @@ njord_parse_html(html_lexer_t* lexer, dom_t* dom)
     int stack_len = 0;
 
     stack[0] = dom->root_node;
+
+    dom->style_nodes     = netlore_calloc(1, sizeof(dom_node_t*));
+    dom->style_nodes_len = 0;
 
     NETLORE_DEBUG("parsing html tokens into a DOM Tree");
 
@@ -614,5 +655,10 @@ njord_parse_html(html_lexer_t* lexer, dom_t* dom)
             continue;
     }
 
+    for (int i = 0; i < (int)dom->root_node->childrens_len; i++)
+    {
+        njord_is_node_style(dom, dom->root_node->childrens[i]);
+        njord_loop_through_node_styles(dom, dom->root_node->childrens[i]);
+    }
     // njord_dump_tree(dom, dom->root_node, 0);
 }

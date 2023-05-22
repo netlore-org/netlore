@@ -22,6 +22,7 @@
 
 #include <netlore/netlore.h>
 #include <netlore/netlore_utils.h>
+#include <string.h>
 
 char* 
 netlore_create_copy_string(const char* str)
@@ -56,4 +57,14 @@ netlore_append_to_alloc_string(char* str, const char c)
     str[str_length + 1] = 0;
 
     return str;
+}
+
+char*
+netlore_create_string_from_char(const char c)
+{
+    char buf[2];
+    buf[0] = c;
+    buf[1] = '\0';
+
+    return netlore_create_copy_string(buf);
 }

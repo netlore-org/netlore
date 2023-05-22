@@ -55,6 +55,6 @@ typedef struct __html_token_t {
     char* value;
 } html_token_t;
 
-html_token_t* njord_create_token(html_token_kind_t kind, char* value);
+html_token_t* njord_html_create_token(html_token_kind_t kind, char* value);
 
 #endif /* __NETLORE_NJORD_HTML_TOK */

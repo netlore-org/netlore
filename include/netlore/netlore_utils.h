@@ -29,4 +29,6 @@ char* netlore_create_copy_string(const char* str);
 
 char* netlore_gen_spacing(int spacing_amount);
 
+char* netlore_create_string_from_char(const char c);
+
 #endif /* __NETLORE_NETLORE_UTILS */

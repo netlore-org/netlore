@@ -86,7 +86,7 @@ freja_request_host(const char* url)
     CURLcode curl_res = curl_easy_perform(curl);
     if (curl_res != CURLE_OK) 
     {
-        NETLORE_ERROR("something gone wrong while requesting \"%s\"", url);
+        NETLORE_ERROR_NO_EXIT("something gone wrong while requesting \"%s\"", url);
         return NULL;
     }
 

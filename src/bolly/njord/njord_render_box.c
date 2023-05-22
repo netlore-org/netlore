@@ -55,6 +55,8 @@ njord_set_padding_render_box(render_box_t rnd_box, double top, double bottom, do
     rnd_box.padding.right  = right;
     rnd_box.padding.left   = left;
     rnd_box.padding.top    = top;
+
+    NETLORE_USE(rnd_box);
 }
 
 void
@@ -64,4 +66,6 @@ njord_set_margin_render_box(render_box_t rnd_box, double top, double bottom, dou
     rnd_box.margin.right  = right;
     rnd_box.margin.left   = left;
     rnd_box.margin.top    = top;
+
+    NETLORE_USE(rnd_box);
 }

@@ -27,9 +27,6 @@
  *  - https://github.com/netlore-org/netlore
  */
 
-#ifndef __NETLORE_NJORD_CSS_TOK
-#define __NETLORE_NJORD_CSS_TOK
-
 #include <netlore/netlore.h>
 #include <netlore/netlore_utils.h>
 
@@ -39,7 +36,7 @@
 #include <netlore/bolly/njord/njord_dom.h>
 
 css_token_t* 
-njord_create_token(css_token_kind_t kind, char* value)
+njord_css_create_token(css_token_kind_t kind, char* value)
 {
     css_token_t* token = (css_token_t*)netlore_calloc(1, sizeof(css_token_t));
     token->value = netlore_create_copy_string(value);
@@ -47,5 +44,3 @@ njord_create_token(css_token_kind_t kind, char* value)
 
     return token;
 }
-
-#endif /* __NETLORE_NJORD_CSS_TOK */

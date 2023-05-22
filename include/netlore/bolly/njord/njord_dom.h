@@ -44,6 +44,9 @@ typedef struct __dom_t {
 
     dom_node_t* root_node;
     window_t*   window;
+
+    dom_node_t** style_nodes;
+    size_t       style_nodes_len;
 } dom_t;
 
 dom_t* njord_create_dom(window_t* window);

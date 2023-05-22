@@ -20,8 +20,6 @@
  * THE SOFTWARE.
  */
 
-#include "netlore/bolly/loki/loki_layout.h"
-#include "netlore/netlore_utils.h"
 #include <netlore/bolly/freja/freja_request.h>
 #include <netlore/bolly/freja/freja_https.h>
 
@@ -45,11 +43,15 @@
 #include <netlore/bolly/loki/loki_draw_dom.h>
 #include <netlore/bolly/loki/loki_layout.h>
 
+#include <netlore/bolly/njord/njord_html_tok.h>
+#include <netlore/bolly/njord/njord_css_tok.h>
 #include <netlore/bolly/njord/njord_style.h>
 #include <netlore/bolly/njord/njord_html.h>
 #include <netlore/bolly/njord/njord_node.h>
 #include <netlore/bolly/njord/njord_dom.h>
+#include <netlore/bolly/njord/njord_css.h>
 
+#include <netlore/netlore_utils.h>
 #include <netlore/netlore.h>
 
 #include <SDL2/SDL_surface.h>
@@ -81,23 +83,39 @@ go_callback(component_t* component, int event_type)
     NETLORE_NO_NULL_EXIT(input);
 
     request_t* request = freja_request_host(input->input.input_value);
-    
-    if (last_text_id != 0)
+    if (request == NULL)
     {
-        component_t* text     = heimdall_find_component_by_id(component->ui_parent, last_text_id);
-        text->text.text_value = request->response->memory;
-        NETLORE_NO_NULL_EXIT(text);
+        component_t* title = heimdall_create_component(component->ui_parent, HEIMDALL_COMPONENT_TEXT, heimdall_create_size2(0, 0), heimdall_create_vec2(10, 60), true);
+        title->text.text_color = heimdall_create_color_rgba(0, 0, 0, 255);
+        title->text.text_value = "Network Error";
+        title->text.text_size  = 32;
+        heimdall_add_component(component->ui_parent, title);
+
+        component_t* desc = heimdall_create_component(component->ui_parent, HEIMDALL_COMPONENT_TEXT, heimdall_create_size2(0, 0), heimdall_create_vec2(10, 60 + 40), true);
+        desc->text.text_color = heimdall_create_color_rgba(0, 0, 0, 255);
+        desc->text.text_value = "Couldn't send request to given host, check your internet connection and firewall.";
+        desc->text.text_size  = 16;
+        heimdall_add_component(component->ui_parent, desc);
     }
     else 
     {
-        component_t* text = heimdall_create_component(component->ui_parent, HEIMDALL_COMPONENT_TEXT, heimdall_create_size2(0, 0),
-                                                  heimdall_create_vec2(10, 60), true);
-        text->text.text_color = heimdall_create_color_rgba(0, 0, 0, 255);
-        text->text.text_value = request->response->memory;
-        text->text.text_size  = 16;
-        heimdall_add_component(component->ui_parent, text);
+        if (last_text_id != 0)
+        {
+            component_t* text     = heimdall_find_component_by_id(component->ui_parent, last_text_id);
+            text->text.text_value = request->response->memory;
+            NETLORE_NO_NULL_EXIT(text);
+        }
+        else 
+        {
+            component_t* text = heimdall_create_component(component->ui_parent, HEIMDALL_COMPONENT_TEXT, heimdall_create_size2(0, 0),
+                                                    heimdall_create_vec2(10, 60), true);
+            text->text.text_color = heimdall_create_color_rgba(0, 0, 0, 255);
+            text->text.text_value = request->response->memory;
+            text->text.text_size  = 16;
+            heimdall_add_component(component->ui_parent, text);
 
-        last_text_id = text->id;
+            last_text_id = text->id;
+        }
     }
 }
 
@@ -141,6 +159,15 @@ main(int argc, char** argv)
 
     html_lexer_t* lex = njord_tokenize_html("<html>\n\
 <head>\n\
+    <style>\n\
+        body {\n\
+            background-color: black;\n\
+        }\n\
+\n\
+        span {\n\
+            color: red;\n\
+        }\n\
+    </style>\n\
 </head>\n\
 <body>\n\
     <span class=\"title\">Netlore!</span>\n\
@@ -148,8 +175,9 @@ main(int argc, char** argv)
 </html>");
 
     njord_parse_html(lex, dom);
-    njord_dump_tree(dom, dom->root_node, 0);
+    // njord_dump_tree(dom, dom->root_node, 0);
 
+    njord_tokenize_parse_all_css_dom(dom);
     loki_layout_dom(dom);
 
     heimdall_window_loop(window);

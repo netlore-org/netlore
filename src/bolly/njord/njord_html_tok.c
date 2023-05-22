@@ -36,7 +36,7 @@
 #include <netlore/bolly/njord/njord_dom.h>
 
 html_token_t* 
-njord_create_token(html_token_kind_t kind, char* value)
+njord_html_create_token(html_token_kind_t kind, char* value)
 {
     html_token_t* token = (html_token_t*)netlore_calloc(1, sizeof(html_token_t));
     token->value = netlore_create_copy_string(value);
