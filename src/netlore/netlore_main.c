@@ -43,6 +43,7 @@
 #include <netlore/bolly/loki/loki_draw_dom.h>
 #include <netlore/bolly/loki/loki_layout.h>
 
+#include <netlore/bolly/njord/njord_builtin_colors.h>
 #include <netlore/bolly/njord/njord_html_tok.h>
 #include <netlore/bolly/njord/njord_css_tok.h>
 #include <netlore/bolly/njord/njord_style.h>
