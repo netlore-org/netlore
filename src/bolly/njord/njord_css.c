@@ -38,11 +38,19 @@
 #include <netlore/bolly/njord/njord_node.h>
 #include <netlore/bolly/njord/njord_dom.h>
 #include <netlore/bolly/njord/njord_css.h>
+#include <stdbool.h>
 
 #define CSS_IS_WHITESPACE(space) ((space == ' ') || (space == '\t') || (space == '\n'))
-#define CSS_IS_IDENTIFIER(char)  (((char >= 'a') && (char <= 'z')) || \
-                                  ((char >= 'A') && (char <= 'Z')) || \
-                                  ((char == '-')))                    \
+
+#define CSS_IS_IDENTIFIER(char) (((char >= 'a') && (char <= 'z')) || \
+                                 ((char >= 'A') && (char <= 'Z')) || \
+                                 ((char == '-')))
+
+#define CSS_IS_NUMBER(char)     (((char >= '0') && (char <= '9')))
+
+#define CSS_IS_HEX(char)        (((char >= '0') && (char <= '9')) || \
+                                 ((char >= 'a') && (char <= 'f')) || \
+                                 ((char >= 'A') && (char <= 'F')))
 
 #define CSS_CREATE_APPEND_TOKEN(lexer, kind, value) ({                   \
     njord_css_append_token(lexer, njord_css_create_token(kind, value));  \
@@ -65,6 +73,15 @@ njord_css_append_token(css_lexer_t* lexer, css_token_t* token)
                             netlore_realloc(lexer->tokens, (lexer->tokens_len + 1) * sizeof(css_token_t*));
 }
 
+void
+njord_css_delete_last_token(css_lexer_t* lexer)
+{
+    if (lexer->tokens_len == 0) return;
+
+    lexer->tokens_len--;
+    lexer->tokens[lexer->tokens_len] = NULL;
+}
+
 bool
 njord_css_tokenize_short_tokens(css_lexer_t* lexer)
 {
@@ -72,7 +89,8 @@ njord_css_tokenize_short_tokens(css_lexer_t* lexer)
     {
         case '#': 
             CSS_CREATE_APPEND_TOKEN(lexer, HASH, "#");
-            lexer->space = false;
+            lexer->hex_starts = true;
+            lexer->space      = false;
 
             return true;
         case ':': 
@@ -132,6 +150,52 @@ njord_css_is_space(css_lexer_t* lexer)
     return is_space;
 }
 
+bool
+njord_css_character_is_number(css_lexer_t* lexer)
+{
+    bool is_num = CSS_IS_NUMBER(lexer->curr_char);
+
+    if (is_num)
+        lexer->space = false;
+
+    return is_num;
+}
+
+bool
+njord_css_character_is_hex_number(css_lexer_t* lexer)
+{
+    if (!lexer->hex_starts) 
+        return false;
+
+    bool is_hex = CSS_IS_HEX(lexer->curr_char);
+
+    if (is_hex)
+        lexer->space = false;
+
+    return is_hex;
+}
+
+void
+njord_css_tokenize_number(css_lexer_t* lexer)
+{
+    css_token_t* num_token = njord_css_create_token(NUMBER, netlore_create_string_from_char(lexer->curr_char));
+    njord_css_advance(lexer, 1);
+
+    if (lexer->curr_char == '\0') return;
+
+    while (true)
+    {
+        if (!CSS_IS_NUMBER(lexer->curr_char))
+            break;
+
+        netlore_append_to_alloc_string(num_token->value, lexer->curr_char);
+        njord_css_advance(lexer, 1);
+    }
+
+    njord_css_append_token(lexer, num_token);
+    njord_css_advance(lexer, -1);
+}
+
 void
 njord_css_tokenize_identifier(css_lexer_t* lexer)
 {
@@ -142,13 +206,43 @@ njord_css_tokenize_identifier(css_lexer_t* lexer)
 
     while (true)
     {
-        if (!CSS_IS_IDENTIFIER(lexer->curr_char)) break;
+        if (!CSS_IS_IDENTIFIER(lexer->curr_char)) 
+            if (!CSS_IS_NUMBER(lexer->curr_char))
+                break;
 
         netlore_append_to_alloc_string(id_token->value, lexer->curr_char);
         njord_css_advance(lexer, 1);
     }
 
     njord_css_append_token(lexer, id_token);
+    njord_css_advance(lexer, -1);
+}
+
+void
+njord_css_tokenize_hex_number(css_lexer_t* lexer)
+{
+    njord_css_delete_last_token(lexer);
+
+    char* str = (char*)netlore_calloc(3, sizeof(char));
+    str[0] = '#';
+    str[1] = lexer->curr_char;
+    str[2] = '\0';
+
+    css_token_t* hex_token = njord_css_create_token(NUMBER, str);
+    njord_css_advance(lexer, 1);
+
+    if (lexer->curr_char == '\0') return;
+
+    while (true)
+    {
+        if (!CSS_IS_HEX(lexer->curr_char))
+            break;
+        
+        netlore_append_to_alloc_string(hex_token->value, lexer->curr_char);
+        njord_css_advance(lexer, 1);
+    }
+
+    njord_css_append_token(lexer, hex_token);
     njord_css_advance(lexer, -1);
 }
 
@@ -171,7 +265,7 @@ njord_tokenize_css(const char* value)
     {
         njord_css_advance(lexer, 0);
     
-        if (lexer->curr_char == '/' && lexer->comment == false)
+        if (lexer->curr_char == '/' && !lexer->comment)
         {
             /* When we encounter a '/' character that means that
              * we maybe want to open a comment, so let's look at
@@ -184,7 +278,7 @@ njord_tokenize_css(const char* value)
                 continue;
             }
         }
-        else if (lexer->curr_char == '*' && lexer->comment == true)
+        else if (lexer->curr_char == '*' && lexer->comment)
         {
             /* When we encounter a '*' character that means that
              * we maybe want to close a comment, so let's look at
@@ -197,23 +291,32 @@ njord_tokenize_css(const char* value)
                 continue;
             }
         }
-        else if (lexer->comment == true) 
+        else if (lexer->comment) 
             continue;
-        else if (njord_css_tokenize_short_tokens(lexer) == true) 
+        else if (njord_css_tokenize_short_tokens(lexer)) 
             continue;
-        else if (njord_css_is_space(lexer) == true)
+        else if (njord_css_is_space(lexer))
             continue;
-        else if (njord_css_character_is_identifier(lexer) == true)
+        else if (njord_css_character_is_hex_number(lexer))
+        {
+            njord_css_tokenize_hex_number(lexer);
+            lexer->hex_starts = false;
+
+            continue;
+        }
+        else if (njord_css_character_is_identifier(lexer))
         {
             njord_css_tokenize_identifier(lexer);
             continue;
         }
-    }
+        else if (njord_css_character_is_number(lexer))
+        {
+            njord_css_tokenize_number(lexer);
+            continue;
+        }
 
-    for (int i = 0; i < lexer->tokens_len; i++)
-    {
-        printf("%d | \"%s\"\n", lexer->tokens[i]->kind, lexer->tokens[i]->value);
-    }          
+        lexer->hex_starts = false;
+    }
 
     return lexer;
 }
@@ -221,7 +324,19 @@ njord_tokenize_css(const char* value)
 void 
 njord_parse_css(css_lexer_t* lexer, dom_t* dom)
 {
+    css_token_t* token = NULL;
 
+    bool expect_rule_style_name = true;
+
+    for (int i = 0; i < lexer->tokens_len; i++)
+    {
+        token = lexer->tokens[i];
+        
+        // if (expect_rule_style_name)
+        // {
+        //     dom_node_t** nodes_rule = njord_parse_and_find_node_style_rule();
+        // }
+    }
 }
 
 /* This function gonna basically just loop through all 

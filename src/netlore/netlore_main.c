@@ -166,7 +166,7 @@ main(int argc, char** argv)
         }\n\
 \n\
         span {\n\
-            color: red;\n\
+            color: #ff00ffff;\n\
         }\n\
     </style>\n\
 </head>\n\

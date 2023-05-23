@@ -32,6 +32,7 @@
 # include <stdlib.h>
 # include <stdlib.h>
 # include <stdio.h>
+# include <ctype.h>
 
 # define NETLORE_CURL
 # ifdef NETLORE_CURL
@@ -90,5 +91,7 @@
     NETLORE_ERROR_NO_EXIT("this function is not implemented");  \
     return;                                                     \
 })                                                              \
+
+# define NETLORE_BOOL_AS_STR(bool) ((bool) ? "true" : "false")
 
 #endif /* __NETLORE_NETLORE */
