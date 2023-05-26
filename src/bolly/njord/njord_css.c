@@ -321,21 +321,123 @@ njord_tokenize_css(const char* value)
     return lexer;
 }
 
+css_object_style_t*
+njord_css_parse_and_find_node_style_object(css_parser_t* parser)
+{
+    css_object_style_t* obj_style = (css_object_style_t*)netlore_calloc(1, sizeof(css_object_style_t));
+
+    obj_style->nodes_len = 0;
+    obj_style->nodes = (dom_node_t**)netlore_calloc(1, sizeof(dom_node_t*));
+    
+    /* Parse the object name or something else for example
+     *   .class { styles }
+     *    / \
+     *     |
+     */
+
+    css_token_t* obj_token = NULL;
+
+    bool expect_class_name = false;
+    bool expect_id_name    = false;
+    bool expect_anything   = true;
+
+    while (true)
+    {
+        obj_token = parser->lexer->tokens[parser->index];
+
+        if (obj_token->kind == OPEN_BRACE || obj_token->kind == CLOSE_BRACE) return obj_style;
+
+        if (expect_anything)
+        {
+            // If we're here this can mean:
+            //  - We're expecting class name
+            //  - We're expecting id name
+            //  - This is the first loop count and we need to
+            //    recognize the syntax
+
+            if (expect_class_name)
+            {
+                if (obj_token->kind != IDENTIFIER)
+                {
+                    NETLORE_ERROR_NO_EXIT("expected IDENTIFER after DOT");
+                    break;
+                }
+
+                obj_style->obj_class_name = (const char*)obj_token->value;
+                break;
+            }
+            if (expect_id_name)
+            {
+                if (obj_token->kind != IDENTIFIER)
+                {
+                    NETLORE_ERROR_NO_EXIT("expected IDENTIFER after HASH");
+                    break;
+                }
+
+                obj_style->obj_id_name = (const char*)obj_token->value;
+                break;
+            }
+            else 
+            {
+                if (obj_token->kind == DOT)
+                    expect_class_name = true;
+                else if (obj_token->kind == HASH)
+                    expect_id_name = true;
+                else if (obj_token->kind == IDENTIFIER)
+                {
+                    obj_style->obj_tag_name = (const char*)obj_token->value;
+                    break;
+                }
+                else 
+                {
+                    NETLORE_ERROR_NO_EXIT("unexpected CSS token");
+                    return obj_style;
+                }
+            }
+        }
+
+        parser->index++;
+    }
+
+    return obj_style;
+}
+
 void 
 njord_parse_css(css_lexer_t* lexer, dom_t* dom)
 {
-    css_token_t* token = NULL;
+    css_parser_t* parser = (css_parser_t*)netlore_calloc(1, sizeof(css_parser_t));
+    parser->curr_token   = NULL;
+    parser->lexer        = lexer;
+    parser->index        = 0;
+    parser->dom          = dom;
 
-    bool expect_rule_style_name = true;
+    parser->expect_object_style_name = true;
 
-    for (int i = 0; i < lexer->tokens_len; i++)
+    for (parser->index = 0; parser->index < lexer->tokens_len; parser->index++)
     {
-        token = lexer->tokens[i];
+        parser->curr_token = lexer->tokens[parser->index];
         
-        // if (expect_rule_style_name)
-        // {
-        //     dom_node_t** nodes_rule = njord_parse_and_find_node_style_rule();
-        // }
+        if (parser->expect_object_style_name)
+        {
+            css_object_style_t* nodes_objects = njord_css_parse_and_find_node_style_object(parser);
+            NETLORE_DEBUG("parsed style object: class_name=\"%s\", tag_name=\"%s\", id_name=\"%s\"\n", 
+                          nodes_objects->obj_class_name,
+                          nodes_objects->obj_tag_name,
+                          nodes_objects->obj_id_name);
+
+            /* Wait until we expect OPEN_BRACE ('{') */
+            while (true)
+            {
+                if (parser->curr_token->kind == OPEN_BRACE)
+                    break;
+
+                parser->index++;
+                parser->curr_token = lexer->tokens[parser->index];
+            }
+
+        
+            parser->expect_object_style_name = false;
+        }
     }
 }
 

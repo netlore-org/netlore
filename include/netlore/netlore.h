@@ -92,6 +92,10 @@
     return;                                                     \
 })                                                              \
 
+# define NETLORE_VERIFY_NOT_REACHED() ({                                    \
+    NETLORE_ERROR_NO_EXIT("`NETLORE_VERIFY_NOT_REACHED` has been called");  \
+})
+
 # define NETLORE_BOOL_AS_STR(bool) ((bool) ? "true" : "false")
 
 #endif /* __NETLORE_NETLORE */
