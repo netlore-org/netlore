@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 
+#include <ctype.h>
 #include <netlore/netlore.h>
 #include <netlore/netlore_utils.h>
 #include <string.h>
@@ -67,4 +68,18 @@ netlore_create_string_from_char(const char c)
     buf[1] = '\0';
 
     return netlore_create_copy_string(buf);
+}
+
+void
+netlore_to_lower_string(char* str)
+{
+    for (int i = 0; i < (int)strlen(str); i++)
+        str[i] = tolower(str[i]);
+}
+
+void
+netlore_to_upper_string(char* str)
+{
+    for (int i = 0; i < (int)strlen(str); i++)
+        str[i] = toupper(str[i]);
 }

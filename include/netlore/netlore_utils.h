@@ -31,4 +31,7 @@ char* netlore_gen_spacing(int spacing_amount);
 
 char* netlore_create_string_from_char(const char c);
 
+void netlore_to_lower_string(char* str);
+void netlore_to_upper_string(char* str);
+
 #endif /* __NETLORE_NETLORE_UTILS */

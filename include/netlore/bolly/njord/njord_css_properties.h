@@ -1748,4 +1748,6 @@ typedef enum __css_properties_t {
 	ZIndex, // More on: http://www.w3.org/TR/2011/REC-CSS2-20110607/visuren.html#propdef-z-index
 } css_properties_t;
 
+css_properties_t njord_parse_css_property(char* css_string_property);
+
 #endif /* __NETLORE_NJORD_CSS_PROPERTIES */

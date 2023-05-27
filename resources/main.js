@@ -20,40 +20,29 @@
  * THE SOFTWARE.
  */
 
-/*
- * This code is part of Njord (HTML, CSS Parser) Component
- * of Netlore project that can be found at the github
- * repository at:
- *  - https://github.com/netlore-org/netlore
+/* This code is used for generating code C with all of 
+ * CSS Properties, for example "njord_css_properties.h" 
  */
 
-#ifndef __NETLORE_NJORD_STYLE
-#define __NETLORE_NJORD_STYLE
+const fs = require("fs")
+const data = require('./css_properties_to_parse.json')
 
-#include <netlore/netlore.h>
+let last = []
 
-#include <netlore/bolly/njord/njord_css_properties.h>
-#include <netlore/bolly/njord/njord_css_value.h>
-#include <netlore/bolly/njord/njord_dom.h>
+for (let i = 0; i < data.length; i++)
+{
+    let property = data[i].property
+        .split("/")
+            .map(snake => snake.split("-")
+            .map(substr => substr.charAt(0)
+                .toUpperCase() +
+                substr.slice(1))
+            .join(""))
+        .join("/");
 
-typedef struct __dom_t dom_t;
-
-typedef struct __style_rule_t {
-    css_properties_t property;
-    css_value_t* value;
-} style_rule_t;
-
-typedef struct __style_t {
-    style_rule_t** style_rules;
-    size_t style_rules_len;
-
-    dom_t* dom;
-} style_t;
-
-style_t* njord_create_style();
-
-void njord_append_style_rule_to_style(style_t* style, style_rule_t* style_rule);
-
-style_rule_t* njord_create_style_rule(css_properties_t property, css_value_t* value);
-
-#endif /* __NETLORE_NJORD_STYLE */
+    if (!last.includes(property))
+    {
+        console.log(`\tif (strcmp(css_string_property, \"${data[i].property}\"))\n\t\treturn ${property};`);
+        last.push(property);
+    }
+}

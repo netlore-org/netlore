@@ -27,33 +27,11 @@
  *  - https://github.com/netlore-org/netlore
  */
 
-#ifndef __NETLORE_NJORD_STYLE
-#define __NETLORE_NJORD_STYLE
+#ifndef __NETLORE_NJORD_CSS_VALUE
+#define __NETLORE_NJORD_CSS_VALUE
 
-#include <netlore/netlore.h>
+typedef struct __css_value_t {
+    /* TODO */
+} css_value_t;
 
-#include <netlore/bolly/njord/njord_css_properties.h>
-#include <netlore/bolly/njord/njord_css_value.h>
-#include <netlore/bolly/njord/njord_dom.h>
-
-typedef struct __dom_t dom_t;
-
-typedef struct __style_rule_t {
-    css_properties_t property;
-    css_value_t* value;
-} style_rule_t;
-
-typedef struct __style_t {
-    style_rule_t** style_rules;
-    size_t style_rules_len;
-
-    dom_t* dom;
-} style_t;
-
-style_t* njord_create_style();
-
-void njord_append_style_rule_to_style(style_t* style, style_rule_t* style_rule);
-
-style_rule_t* njord_create_style_rule(css_properties_t property, css_value_t* value);
-
-#endif /* __NETLORE_NJORD_STYLE */
+#endif /* __NETLORE_NJORD_CSS_VALUE */

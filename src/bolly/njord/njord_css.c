@@ -27,18 +27,21 @@
  *  - https://github.com/netlore-org/netlore
  */
 
+#include "netlore/bolly/njord/njord_builtin_colors.h"
+#include "netlore/bolly/njord/njord_css_properties.h"
 #include <netlore/netlore.h>
 #include <netlore/netlore_utils.h>
 
 #include <netlore/bolly/heimdall/heimdall_window.h>
 #include <netlore/bolly/freja/freja_request.h>
 
+#include <netlore/bolly/njord/njord_style.h>
 #include <netlore/bolly/njord/njord_css_tok.h>
 #include <netlore/bolly/njord/njord_html.h>
 #include <netlore/bolly/njord/njord_node.h>
 #include <netlore/bolly/njord/njord_dom.h>
 #include <netlore/bolly/njord/njord_css.h>
-#include <stdbool.h>
+
 
 #define CSS_IS_WHITESPACE(space) ((space == ' ') || (space == '\t') || (space == '\n'))
 
@@ -402,6 +405,125 @@ njord_css_parse_and_find_node_style_object(css_parser_t* parser)
     return obj_style;
 }
 
+style_t*
+njord_css_parse_style_rules(css_parser_t* parser)
+{
+    /* So how would we parse style rules? That's easy tbh
+     * let's look at an example css code where inside {} 
+     * are some style rules.
+     *
+     * body { background-color: green; }
+     *
+     * Basically what we need to do is take the style rule 
+     * token name and find it as an enum property next look
+     * out for : and parse the value of it for this it's green
+     * so we need to lookup at our builtin colors table
+     */
+
+    style_t* style = njord_create_style();
+
+    bool expect_style_rule_name      = true;
+    bool expect_style_rule_separator = false;
+    bool expect_style_rule_value     = false;
+
+    while (true)
+    {
+        if (expect_style_rule_name)
+        {
+            if (parser->curr_token->kind == IDENTIFIER)
+            {
+                /* 1. Validate is it a correct rule style name
+                 *    if not send an error and return NULL */
+                css_properties_t css_property = njord_parse_css_property(parser->curr_token->value);
+
+                if (css_property == (css_properties_t)-1)
+                {
+                    NETLORE_ERROR_NO_EXIT("unknown css property named `%s`. stopping css parser because of it.", 
+                                parser->curr_token->value);
+                    return NULL;
+                }
+
+                /* 2. Create a new style rule and set expect_style_rule_separator
+                 *    to true */
+
+                njord_create_style_rule(css_property, NULL);
+
+                expect_style_rule_name      = false;
+                expect_style_rule_separator = true;
+
+                parser->index++;
+                parser->curr_token = parser->lexer->tokens[parser->index];
+
+                continue;
+            }
+            else 
+            {
+                NETLORE_ERROR_NO_EXIT("expected identifier as style rule name. stopping css parser because of it.\n");
+                return NULL;
+            }
+        }
+        else if (expect_style_rule_separator)
+        {
+            if (parser->curr_token->kind == COLON)
+            {
+                expect_style_rule_separator = false;
+                expect_style_rule_value     = true;
+
+                parser->index++;
+                parser->curr_token = parser->lexer->tokens[parser->index];
+
+                continue;
+            }
+            else 
+            {
+                NETLORE_ERROR_NO_EXIT("expected colon as style rule separator. stopping css parser because of it.\n");
+                return NULL;
+            }
+        }
+        else if (expect_style_rule_value)
+        {
+            /* How do we parser style rule value? That's a harder one
+             * we need to recognize what's the value for example when we 
+             * get an identifier which represents color it does mean that
+             * is a color when we encounter an 100 token and px token this 
+             * means that we want to create a number like value. */
+
+            if (parser->curr_token->kind == IDENTIFIER)
+            {
+                /* First of all look up isn't it a color */
+                netlore_to_lower_string(parser->curr_token->value);
+                unsigned long color = 
+                        njord_get_builtin_color_by_name((const char*)parser->curr_token->value);
+
+                if (color == 0x00000000)
+                {
+                    /* TODO: Just set value as an identifier */
+                }
+                else 
+                {
+                    /* TODO: Set color to style value */
+                    NETLORE_DEBUG("color: %.8lx, \"%s\"", color, parser->curr_token->value);
+                }
+
+                parser->index++;
+                parser->curr_token = parser->lexer->tokens[parser->index];
+
+                continue;
+            }
+            else {
+                NETLORE_DEBUG("for now returning if the curr_token->kind isn't identifier for style value");
+                return NULL;
+            }
+
+        }
+
+        NETLORE_VERIFY_NOT_REACHED();
+        break;
+    }
+
+    return style;
+}
+
 void 
 njord_parse_css(css_lexer_t* lexer, dom_t* dom)
 {
@@ -420,22 +542,35 @@ njord_parse_css(css_lexer_t* lexer, dom_t* dom)
         if (parser->expect_object_style_name)
         {
             css_object_style_t* nodes_objects = njord_css_parse_and_find_node_style_object(parser);
-            NETLORE_DEBUG("parsed style object: class_name=\"%s\", tag_name=\"%s\", id_name=\"%s\"\n", 
+            NETLORE_DEBUG("parsed style object: class_name=\"%s\", tag_name=\"%s\", id_name=\"%s\"", 
                           nodes_objects->obj_class_name,
                           nodes_objects->obj_tag_name,
                           nodes_objects->obj_id_name);
 
-            /* Wait until we expect OPEN_BRACE ('{') */
-            while (true)
+            if (parser->curr_token->kind != OPEN_BRACE)
             {
-                if (parser->curr_token->kind == OPEN_BRACE)
-                    break;
-
-                parser->index++;
-                parser->curr_token = lexer->tokens[parser->index];
+                /* Wait until we get OPEN_BRACE ('{') as current
+                 * token */
+                while (true)
+                {
+                    if (parser->curr_token->kind == OPEN_BRACE)
+                        break;
+                    
+                    parser->index++;
+                    parser->curr_token = lexer->tokens[parser->index];
+                }
             }
 
-        
+            /* Skip OPEN_BRACE ('{') token */
+            parser->index++;
+            parser->curr_token = lexer->tokens[parser->index];
+
+            /* Parse style rules */
+            style_t* parse_style_rules = njord_css_parse_style_rules(parser);
+
+            if (parse_style_rules == NULL)
+                return;
+
             parser->expect_object_style_name = false;
         }
     }

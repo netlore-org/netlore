@@ -33,6 +33,8 @@
 #include <netlore/bolly/njord/njord_style.h>
 #include <netlore/bolly/njord/njord_dom.h>
 
+typedef struct __style_t style_t;
+
 typedef struct __render_box_t {
 	double width, height;
 	double top, left;
