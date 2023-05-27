@@ -29,6 +29,7 @@
 
 #include "netlore/bolly/njord/njord_builtin_colors.h"
 #include "netlore/bolly/njord/njord_css_properties.h"
+#include "netlore/bolly/njord/njord_css_value.h"
 #include <netlore/netlore.h>
 #include <netlore/netlore_utils.h>
 
@@ -446,7 +447,7 @@ njord_css_parse_style_rules(css_parser_t* parser)
                 /* 2. Create a new style rule and set expect_style_rule_separator
                  *    to true */
 
-                njord_create_style_rule(css_property, NULL);
+                njord_append_style_rule_to_style(style, njord_create_style_rule(css_property, NULL));
 
                 expect_style_rule_name      = false;
                 expect_style_rule_separator = true;
@@ -497,7 +498,27 @@ njord_css_parse_style_rules(css_parser_t* parser)
 
                 if (color == 0x00000000)
                 {
-                    /* TODO: Just set value as an identifier */
+                    /* Just set value as an custom ident or keyword */
+
+                    css_value_t* css_value = njord_create_css_value(CUSTOM_IDENT, (void*)parser->curr_token->value);
+
+                    if (njord_css_is_keyword(parser->curr_token->value))
+                    {
+                        css_value->type = KEYWORD_VALUES;
+                        style->style_rules[style->style_rules_len - 1]->value = css_value;
+                    }
+                    else 
+                    {
+                        css_value->type = CUSTOM_IDENT;
+                        style->style_rules[style->style_rules_len - 1]->value = css_value;
+                    }
+
+                    parser->index++;
+                    parser->curr_token = parser->lexer->tokens[parser->index];
+
+                    expect_style_rule_name  = true;
+                    expect_style_rule_value = false;
+                    continue;
                 }
                 else 
                 {
@@ -505,8 +526,6 @@ njord_css_parse_style_rules(css_parser_t* parser)
                     NETLORE_DEBUG("color: %.8lx, \"%s\"", color, parser->curr_token->value);
                 }
 
-                parser->index++;
-                parser->curr_token = parser->lexer->tokens[parser->index];
 
                 continue;
             }
@@ -543,7 +562,7 @@ njord_parse_css(css_lexer_t* lexer, dom_t* dom)
         {
             css_object_style_t* nodes_objects = njord_css_parse_and_find_node_style_object(parser);
             NETLORE_DEBUG("parsed style object: class_name=\"%s\", tag_name=\"%s\", id_name=\"%s\"", 
-                          nodes_objects->obj_class_name,
+                          nodes_objects->obj_class_name, 
                           nodes_objects->obj_tag_name,
                           nodes_objects->obj_id_name);
 
