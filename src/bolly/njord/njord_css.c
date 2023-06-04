@@ -641,7 +641,7 @@ njord_css_parse_expect_style_value(css_parser_t* parser, style_t* style, css_par
         continue;                                                                  \
     else if (ret == 2)                                                             \
         return NULL;                                                               \
-})
+})                                                                                 \
 
 style_t*
 njord_css_parse_style_rules(css_parser_t* parser)
