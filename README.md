@@ -63,7 +63,7 @@ What will I use while creating netlore, I can just answer C and go on with this 
         - [X]  *Text*
 - [ ]  **Njord** (HTML, CSS Parser)
     - [X]  *HTML Parser*
-    - [ ]  *CSS Parser*
+    - [X]  *CSS Parser*
     - [X]  *Create DOM nodes from them*
 - [ ]  **Balder** (URL Parser)
     - [ ]  *Is URL correct*
