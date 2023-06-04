@@ -123,7 +123,7 @@ typedef enum __css_value_type_t {
    * njord_css_value_get_unwrapped_percentage(); which will return double type
    * value.
    */
-  PERCENTAGE
+  PERCENTAGE,
 
 } css_value_type_t;
 
@@ -211,7 +211,7 @@ char* njord_css_value_get_unwrapped_url(css_value_t* css_value);
 
 /* Returns NULL on error or when the value type
  * is not INTEGER */
-long* njord_css_value_get_unwrapped_integer(css_value_t* css_value);
+long long* njord_css_value_get_unwrapped_integer(css_value_t* css_value);
 
 /* Returns NULL on error or when the value type
  * is not NUMBER */

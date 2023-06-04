@@ -49,8 +49,8 @@ void
 njord_append_style_rule_to_style(style_t* style, style_rule_t* style_rule)
 {
     style->style_rules_len++;
-    style->style_rules = (style_rule_t**)netlore_realloc(style->style_rules, (style->style_rules_len + 1) * sizeof(style_rule_t*));
     style->style_rules[style->style_rules_len - 1] = style_rule;
+    style->style_rules = (style_rule_t**)netlore_realloc(style->style_rules, (style->style_rules_len + 1) * sizeof(style_rule_t*));
 }
 
 style_rule_t* 

@@ -27,22 +27,25 @@
  *  - https://github.com/netlore-org/netlore
  */
 
-#include "netlore/bolly/njord/njord_builtin_colors.h"
-#include "netlore/bolly/njord/njord_css_properties.h"
-#include "netlore/bolly/njord/njord_css_value.h"
+
+#include <SDL2/SDL_stdinc.h>
 #include <netlore/netlore.h>
 #include <netlore/netlore_utils.h>
 
 #include <netlore/bolly/heimdall/heimdall_window.h>
 #include <netlore/bolly/freja/freja_request.h>
 
-#include <netlore/bolly/njord/njord_style.h>
+#include <netlore/bolly/njord/njord_builtin_colors.h>
+#include <netlore/bolly/njord/njord_css_properties.h>
+#include <netlore/bolly/njord/njord_css_value.h>
 #include <netlore/bolly/njord/njord_css_tok.h>
+#include <netlore/bolly/njord/njord_style.h>
 #include <netlore/bolly/njord/njord_html.h>
 #include <netlore/bolly/njord/njord_node.h>
 #include <netlore/bolly/njord/njord_dom.h>
 #include <netlore/bolly/njord/njord_css.h>
-
+#include <stdbool.h>
+#include <stdlib.h>
 
 #define CSS_IS_WHITESPACE(space) ((space == ' ') || (space == '\t') || (space == '\n'))
 
@@ -55,6 +58,21 @@
 #define CSS_IS_HEX(char)        (((char >= '0') && (char <= '9')) || \
                                  ((char >= 'a') && (char <= 'f')) || \
                                  ((char >= 'A') && (char <= 'F')))
+
+#define CSS_WAIT_UNTIL_SEMICOLON_OR_END(parser) ({                                              \
+    while (true)                                                                                \
+    {                                                                                           \
+        if (parser->curr_token->kind == SEMICOLON || parser->curr_token->kind == CLOSE_BRACE)   \
+            break;                                                                              \
+                                                                                                \
+        parser->index++;                                                                        \
+        parser->curr_token = parser->lexer->tokens[parser->index];                              \
+    }                                                                                           \
+})
+
+const char* css_keywords[] = {
+    /* TODO: create a css keyword array */
+};
 
 #define CSS_CREATE_APPEND_TOKEN(lexer, kind, value) ({                   \
     njord_css_append_token(lexer, njord_css_create_token(kind, value));  \
@@ -182,7 +200,7 @@ njord_css_character_is_hex_number(css_lexer_t* lexer)
 void
 njord_css_tokenize_number(css_lexer_t* lexer)
 {
-    css_token_t* num_token = njord_css_create_token(NUMBER, netlore_create_string_from_char(lexer->curr_char));
+    css_token_t* num_token = njord_css_create_token(TOK_NUMBER, netlore_create_string_from_char(lexer->curr_char));
     njord_css_advance(lexer, 1);
 
     if (lexer->curr_char == '\0') return;
@@ -232,7 +250,7 @@ njord_css_tokenize_hex_number(css_lexer_t* lexer)
     str[1] = lexer->curr_char;
     str[2] = '\0';
 
-    css_token_t* hex_token = njord_css_create_token(NUMBER, str);
+    css_token_t* hex_token = njord_css_create_token(TOK_NUMBER, str);
     njord_css_advance(lexer, 1);
 
     if (lexer->curr_char == '\0') return;
@@ -406,6 +424,225 @@ njord_css_parse_and_find_node_style_object(css_parser_t* parser)
     return obj_style;
 }
 
+bool
+njord_css_is_keyword(char* str)
+{
+    /* TODO: create a css keywords array and compare given str
+     *       to element from array */
+    
+    return false;
+}
+
+/* This function can return 0 which just means that
+ * actions in this function gone well, 1 when we want
+ * to skip to the next loop cycle, 2 for returning 
+ * NULL in main called function 
+ */
+int
+njord_css_parse_expect_style_rule_name(css_parser_t* parser, style_t* style, css_parse_style_rules_t* parse_style_rules)
+{
+    if (parser->curr_token->kind == IDENTIFIER)
+    {
+        /* 1. Validate is it a correct rule style name
+            *    if not send an error and return NULL */
+        css_properties_t css_property = njord_parse_css_property(parser->curr_token->value);
+
+        if (css_property == (css_properties_t)-1)
+        {
+            NETLORE_ERROR_NO_EXIT("unknown css property named `%s`. stopping css parser because of it.", 
+                        parser->curr_token->value);
+
+            /* Indicates return NULL */
+            return 2; 
+        }
+
+        /* 2. Create a new style rule and set expect_style_rule_separator
+            *    to true */
+
+        njord_append_style_rule_to_style(style, njord_create_style_rule(css_property, NULL));
+
+        parse_style_rules->expect_style_rule_name      = false;
+        parse_style_rules->expect_style_rule_separator = true;
+
+        parser->index++;
+        parser->curr_token = parser->lexer->tokens[parser->index];
+
+        /* Indicates continue */
+        return 1;
+    }
+    else 
+    {
+        NETLORE_ERROR_NO_EXIT("expected identifier as style rule name. stopping css parser because of it.");
+
+        /* Indicates return NULL */
+        return 2; 
+    }
+
+    /* Shouldn't happened */
+    NETLORE_VERIFY_NOT_REACHED();
+    return 0; 
+}
+
+/* This function can return 0 which just means that
+ * actions in this function gone well, 1 when we want
+ * to skip to the next loop cycle, 2 for returning 
+ * NULL in main called function 
+ */
+int
+njord_css_parse_expect_style_separator(css_parser_t* parser, style_t* style, css_parse_style_rules_t* parse_style_rules)
+{
+    if (parser->curr_token->kind == COLON)
+    {
+        parse_style_rules->expect_style_rule_separator = false;
+        parse_style_rules->expect_style_rule_value     = true;
+
+        parser->index++;
+        parser->curr_token = parser->lexer->tokens[parser->index];
+
+        return 1;
+    }
+    else 
+    {
+        NETLORE_ERROR_NO_EXIT("expected colon as style rule separator. stopping css parser because of it.");
+        return 2;
+    }
+
+    NETLORE_VERIFY_NOT_REACHED();
+    return 0;
+}
+
+bool
+njord_css_is_str_number_hex(char* str)
+{
+    return str[0] == '#' 
+                ? true 
+                : false;
+}
+
+/* This function can return 0 which just means that
+ * actions in this function gone well, 1 when we want
+ * to skip to the next loop cycle, 2 for returning 
+ * NULL in main called function 
+ */
+int
+njord_css_parse_expect_style_value(css_parser_t* parser, style_t* style, css_parse_style_rules_t* parse_style_rules)
+{
+    /* How do we parser style rule value? That's a harder one
+     * we need to recognize what's the value for example when we 
+     * get an identifier which represents color it does mean that
+     * is a color when we encounter an 100 token and px token this 
+     * means that we want to create a number like value. */
+
+    if (parser->curr_token->kind == IDENTIFIER)
+    {
+        /* First of all look up isn't it a color */
+        netlore_to_lower_string(parser->curr_token->value);
+        unsigned long color = 
+                njord_get_builtin_color_by_name((const char*)parser->curr_token->value);
+
+        if (color == 0x00000000)
+        {
+            /* Just set value as an custom ident or keyword */
+
+            css_value_t* css_value = njord_create_css_value(CUSTOM_IDENT, (void*)parser->curr_token->value);
+
+            if (njord_css_is_keyword(parser->curr_token->value))
+            {
+                css_value->type = KEYWORD_VALUES;
+                style->style_rules[style->style_rules_len - 1]->value = css_value;
+                // style->style_rules_len++;
+                // style->style_rules = (style_rule_t**)
+                //         netlore_realloc(style->style_rules, (style->style_rules_len + 1) * sizeof(style_rule_t*));
+            }
+            else 
+            {
+                css_value->type = CUSTOM_IDENT;
+                style->style_rules[style->style_rules_len - 1]->value = css_value;
+                // style->style_rules_len++;
+                // style->style_rules = (style_rule_t**)
+                //         netlore_realloc(style->style_rules, (style->style_rules_len + 1) * sizeof(style_rule_t*));
+            }
+
+            parser->index++;
+            parser->curr_token = parser->lexer->tokens[parser->index];
+
+            parse_style_rules->expect_style_rule_name  = true;
+            parse_style_rules->expect_style_rule_value = false;
+
+            if (parser->curr_token->kind != SEMICOLON)
+                CSS_WAIT_UNTIL_SEMICOLON_OR_END(parser);
+
+            return 1;
+        }
+        else 
+        {
+            /* Create a number value for color */
+
+            css_value_t* css_value = njord_create_css_value(INTEGER, (void*)color);
+            style->style_rules[style->style_rules_len - 1]->value = css_value;
+            // style->style_rules_len++;
+            // style->style_rules = (style_rule_t**)
+            //         netlore_realloc(style->style_rules, (style->style_rules_len + 1) * sizeof(style_rule_t*));
+
+            parser->index++;
+            parser->curr_token = parser->lexer->tokens[parser->index];
+
+            parse_style_rules->expect_style_rule_name  = true;
+            parse_style_rules->expect_style_rule_value = false;
+
+            if (parser->curr_token->kind != SEMICOLON)
+                CSS_WAIT_UNTIL_SEMICOLON_OR_END(parser);
+
+            return 1;
+        }
+
+        return 1;
+    }
+    else if (parser->curr_token->kind == TOK_NUMBER)
+    {
+        if (njord_css_is_str_number_hex(parser->curr_token->value) == true)
+        {
+            /* We have detected that given token number is a hex one, now we
+             * need to cut # character and convert it into a normal number
+             * and apply it to the css value */
+            
+            /* Cut # character */
+            NETLORE_USE(*parser->curr_token->value++);
+
+            char* end_ptr = (char*)(parser->curr_token->value + (strlen(parser->curr_token->value) * sizeof(char)));
+            long long num = strtoll(parser->curr_token->value, &end_ptr, 16);
+
+            // css_value_t* css_value = njord_create_css_value(INTEGER, (void*)num);
+            // style->style_rules[style->style_rules_len - 1]->value = css_value;
+
+            return 1;
+        }
+
+        /* We have detected that given token numbers isn't a hex base, it's 
+         * a decimal one, so basically we need to convert it into a normal
+         * number and apply it to the css value */
+        
+        return 1;
+    }
+    else 
+    {
+        NETLORE_DEBUG("for now returning if the curr_token->kind isn't identifier for style value");
+        return 2;
+    }
+
+    NETLORE_VERIFY_NOT_REACHED();
+    return 0;
+}
+
+#define CSS_CALL_PARSE_STYLE_RULES_FUNC(parser, style, parse_style_rules, func) ({ \
+    int ret = func(parser, style, parse_style_rules);                              \
+                                                                                   \
+    if (ret == 1)                                                                  \
+        continue;                                                                  \
+    else if (ret == 2)                                                             \
+        return NULL;                                                               \
+})
+
 style_t*
 njord_css_parse_style_rules(css_parser_t* parser)
 {
@@ -423,117 +660,34 @@ njord_css_parse_style_rules(css_parser_t* parser)
 
     style_t* style = njord_create_style();
 
-    bool expect_style_rule_name      = true;
-    bool expect_style_rule_separator = false;
-    bool expect_style_rule_value     = false;
+    css_parse_style_rules_t* parse_style_rules = netlore_malloc(sizeof(css_parse_style_rules_t));
+    parse_style_rules->expect_style_rule_name      = true;
+    parse_style_rules->expect_style_rule_separator = false;
+    parse_style_rules->expect_style_rule_value     = false;
 
     while (true)
     {
-        if (expect_style_rule_name)
+        if (parser->curr_token->kind == SEMICOLON)
         {
-            if (parser->curr_token->kind == IDENTIFIER)
-            {
-                /* 1. Validate is it a correct rule style name
-                 *    if not send an error and return NULL */
-                css_properties_t css_property = njord_parse_css_property(parser->curr_token->value);
-
-                if (css_property == (css_properties_t)-1)
-                {
-                    NETLORE_ERROR_NO_EXIT("unknown css property named `%s`. stopping css parser because of it.", 
-                                parser->curr_token->value);
-                    return NULL;
-                }
-
-                /* 2. Create a new style rule and set expect_style_rule_separator
-                 *    to true */
-
-                njord_append_style_rule_to_style(style, njord_create_style_rule(css_property, NULL));
-
-                expect_style_rule_name      = false;
-                expect_style_rule_separator = true;
-
-                parser->index++;
-                parser->curr_token = parser->lexer->tokens[parser->index];
-
-                continue;
-            }
-            else 
-            {
-                NETLORE_ERROR_NO_EXIT("expected identifier as style rule name. stopping css parser because of it.\n");
-                return NULL;
-            }
+            parser->index++;
+            parser->curr_token = parser->lexer->tokens[parser->index];
+            continue;
         }
-        else if (expect_style_rule_separator)
+
+        if (parser->curr_token->kind == CLOSE_BRACE)
+            break;
+
+        if (parse_style_rules->expect_style_rule_name)
         {
-            if (parser->curr_token->kind == COLON)
-            {
-                expect_style_rule_separator = false;
-                expect_style_rule_value     = true;
-
-                parser->index++;
-                parser->curr_token = parser->lexer->tokens[parser->index];
-
-                continue;
-            }
-            else 
-            {
-                NETLORE_ERROR_NO_EXIT("expected colon as style rule separator. stopping css parser because of it.\n");
-                return NULL;
-            }
+            CSS_CALL_PARSE_STYLE_RULES_FUNC(parser, style, parse_style_rules, njord_css_parse_expect_style_rule_name);
         }
-        else if (expect_style_rule_value)
+        else if (parse_style_rules->expect_style_rule_separator)
         {
-            /* How do we parser style rule value? That's a harder one
-             * we need to recognize what's the value for example when we 
-             * get an identifier which represents color it does mean that
-             * is a color when we encounter an 100 token and px token this 
-             * means that we want to create a number like value. */
-
-            if (parser->curr_token->kind == IDENTIFIER)
-            {
-                /* First of all look up isn't it a color */
-                netlore_to_lower_string(parser->curr_token->value);
-                unsigned long color = 
-                        njord_get_builtin_color_by_name((const char*)parser->curr_token->value);
-
-                if (color == 0x00000000)
-                {
-                    /* Just set value as an custom ident or keyword */
-
-                    css_value_t* css_value = njord_create_css_value(CUSTOM_IDENT, (void*)parser->curr_token->value);
-
-                    if (njord_css_is_keyword(parser->curr_token->value))
-                    {
-                        css_value->type = KEYWORD_VALUES;
-                        style->style_rules[style->style_rules_len - 1]->value = css_value;
-                    }
-                    else 
-                    {
-                        css_value->type = CUSTOM_IDENT;
-                        style->style_rules[style->style_rules_len - 1]->value = css_value;
-                    }
-
-                    parser->index++;
-                    parser->curr_token = parser->lexer->tokens[parser->index];
-
-                    expect_style_rule_name  = true;
-                    expect_style_rule_value = false;
-                    continue;
-                }
-                else 
-                {
-                    /* TODO: Set color to style value */
-                    NETLORE_DEBUG("color: %.8lx, \"%s\"", color, parser->curr_token->value);
-                }
-
-
-                continue;
-            }
-            else {
-                NETLORE_DEBUG("for now returning if the curr_token->kind isn't identifier for style value");
-                return NULL;
-            }
-
+            CSS_CALL_PARSE_STYLE_RULES_FUNC(parser, style, parse_style_rules, njord_css_parse_expect_style_separator);
+        }
+        else if (parse_style_rules->expect_style_rule_value)
+        {
+            CSS_CALL_PARSE_STYLE_RULES_FUNC(parser, style, parse_style_rules, njord_css_parse_expect_style_value);
         }
 
         NETLORE_VERIFY_NOT_REACHED();
@@ -588,9 +742,60 @@ njord_parse_css(css_lexer_t* lexer, dom_t* dom)
             style_t* parse_style_rules = njord_css_parse_style_rules(parser);
 
             if (parse_style_rules == NULL)
+            {
+                NETLORE_ERROR_NO_EXIT("returned parse_style_rules is equal to NULL");
                 return;
+            }
 
-            parser->expect_object_style_name = false;
+            /* FIXME: parse_style_rules->style_rules gives some null values without
+             *        any bigger reason. Don't have time rn for fixing it. */
+
+            for (int i = 0; i < (int)parse_style_rules->style_rules_len; i++)
+            {
+                style_rule_t* rule = parse_style_rules->style_rules[i];
+
+                if (rule == NULL) 
+                    continue;
+
+                printf(" - property=%d, rule_value->type=%d ", 
+                        rule->property, rule->value->type);
+
+                switch (rule->value->type)
+                {
+                    case CUSTOM_IDENT:
+                        printf("rule_value->value=\"%s\"\n", njord_css_value_get_unwrapped_custom_ident(rule->value));
+                        break;
+                    case KEYWORD_VALUES:
+                        printf("rule_value->value=\"%s\"\n", njord_css_value_get_unwrapped_keyword_values(rule->value));
+                        break;
+                    case STRING:
+                        printf("rule_value->value=\"%s\"\n", njord_css_value_get_unwrapped_string(rule->value));
+                        break;
+                    case URL:
+                        printf("rule_value->value=\"url(%s)\"\n", njord_css_value_get_unwrapped_url(rule->value));
+                        break;
+                    case INTEGER:
+                        printf("rule_value->value=%.8llx\n", (long long)rule->value->ptr_to_value);
+                        break;
+                    case NUMBER:
+                        break;
+                    case DIMENSIONS:
+                        break;
+                    case PERCENTAGE:
+                        break;
+                    default:
+                        printf("\n");
+                        break;
+                }
+            }
+
+            if (parser->curr_token->kind != CLOSE_BRACE)
+            {
+                NETLORE_ERROR_NO_EXIT("expected CLOSE_BRACE after style rules");
+                break;
+            }
+
+            parser->expect_object_style_name = true;
         }
     }
 }

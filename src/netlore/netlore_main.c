@@ -162,7 +162,7 @@ main(int argc, char** argv)
 <head>\n\
     <style>\n\
         body {\n\
-            background-color: black;\n\
+            background-color: red;\n\
         }\n\
 \n\
         span {\n\

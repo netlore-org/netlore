@@ -38,7 +38,7 @@
 
 typedef enum __css_token_kind_t {
     IDENTIFIER, // background-color
-    NUMBER,     // 10
+    TOK_NUMBER,     // 10
 
     SEMICOLON, // ;
     AT_SIGN,   // @

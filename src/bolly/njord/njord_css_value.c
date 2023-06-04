@@ -52,6 +52,8 @@ njord_create_css_value(css_value_type_t type, void* ptr_to_value)
 
     value->ptr_to_value = ptr_to_value;
     value->type = type;
+
+    return value;
 }
 
 /* Returns NULL on error or when the value type
@@ -59,10 +61,10 @@ njord_create_css_value(css_value_type_t type, void* ptr_to_value)
 char* 
 njord_css_value_get_unwrapped_custom_ident(css_value_t* css_value)
 {
-    if (css_value->type != CUSTOM_IDENT || css_value->type != KEYWORD_VALUES)
-        return NULL;
+    if (css_value->type == CUSTOM_IDENT || css_value->type == KEYWORD_VALUES)
+        return (char*)css_value->ptr_to_value;
 
-    return (char*)css_value->ptr_to_value;
+    return NULL;
 }
 
 /* Returns NULL on error or when the value type
@@ -70,10 +72,10 @@ njord_css_value_get_unwrapped_custom_ident(css_value_t* css_value)
 char* 
 njord_css_value_get_unwrapped_keyword_values(css_value_t* css_value)
 {
-    if (css_value->type != CUSTOM_IDENT || css_value->type != KEYWORD_VALUES)
-        return NULL;
+    if (css_value->type == CUSTOM_IDENT || css_value->type == KEYWORD_VALUES)
+        return (char*)css_value->ptr_to_value;
 
-    return (char*)css_value->ptr_to_value;
+    return NULL;
 }
 
 /* Returns NULL on error or when the value type
@@ -81,10 +83,10 @@ njord_css_value_get_unwrapped_keyword_values(css_value_t* css_value)
 char* 
 njord_css_value_get_unwrapped_string(css_value_t* css_value)
 {
-    if (css_value->type != STRING)
-        return NULL;
+    if (css_value->type == STRING)
+        return (char*)css_value->ptr_to_value;
 
-    return (char*)css_value->ptr_to_value;
+    return NULL;
 }
 
 /* Returns NULL on error or when the value type
@@ -92,21 +94,21 @@ njord_css_value_get_unwrapped_string(css_value_t* css_value)
 char* 
 njord_css_value_get_unwrapped_url(css_value_t* css_value)
 {
-    if (css_value->type != URL)
-        return NULL;
+    if (css_value->type == URL)
+        return (char*)css_value->ptr_to_value;
 
-    return (char*)css_value->ptr_to_value;
+    return NULL;
 }
 
 /* Returns NULL on error or when the value type
  * is not INTEGER */
-long* 
+long long*
 njord_css_value_get_unwrapped_integer(css_value_t* css_value)
 {
     if (css_value->type != INTEGER)
         return NULL;
 
-    return ((long*)(&css_value->ptr_to_value));
+    return ((long long*)(&css_value->ptr_to_value));
 }
 
 /* Returns NULL on error or when the value type

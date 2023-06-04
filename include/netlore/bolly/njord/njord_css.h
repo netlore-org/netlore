@@ -38,6 +38,12 @@
 #include <netlore/bolly/njord/njord_css_tok.h>
 #include <netlore/bolly/njord/njord_node.h>
 
+typedef struct __css_parse_style_rules_t {
+    bool expect_style_rule_name;
+    bool expect_style_rule_separator;
+    bool expect_style_rule_value;
+} css_parse_style_rules_t;
+
 typedef struct __css_lexer_t {
     css_token_t** tokens;
     const char* value;
