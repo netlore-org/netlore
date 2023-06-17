@@ -38,9 +38,12 @@
 #include <netlore/bolly/njord/njord_css_value.h>
 #include <netlore/bolly/njord/njord_css_tok.h>
 #include <netlore/bolly/njord/njord_node.h>
+#include <netlore/bolly/njord/njord_css.h>
 
 css_unit_type_t njord_css_unit_convert_from_str(char* unit_str);
 
 char* njord_css_unit_convert_to_str(css_unit_type_t unit_type);
+
+long double njord_css_convert_unit_to_px(css_parser_t* parser, css_unit_type_t conversion_unit, long double conversion_number);
 
 #endif /* __NETLORE_NJORD_CSS_UNITS */

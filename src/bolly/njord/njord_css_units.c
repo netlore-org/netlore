@@ -33,6 +33,8 @@
 #include <netlore/netlore.h>
 #include <netlore/netlore_utils.h>
 
+#include <netlore/bolly/heimdall/heimdall_window.h>
+
 #include <netlore/bolly/njord/njord_css_properties.h>
 #include <netlore/bolly/njord/njord_css_value.h>
 #include <netlore/bolly/njord/njord_css.h>
@@ -183,4 +185,113 @@ njord_css_unit_convert_to_str(css_unit_type_t unit_type)
             return "dppx";
 
     return " unknown unit";
+}
+
+long double 
+njord_css_convert_unit_to_px(css_parser_t* parser, css_unit_type_t conversion_unit, 
+                             long double conversion_number)
+{
+    if (conversion_unit == UNIT_EM)
+        // TODO: Return here a proper font size of element
+        return conversion_number * 16; 
+    if (conversion_unit == UNIT_EX)
+        // TODO: Return here a proper font height of element
+        return conversion_number * 16;
+    if (conversion_unit == UNIT_CAP)
+        NETLORE_ERROR("converting unit %s isn't supported yet",
+            njord_css_unit_convert_to_str(conversion_unit));
+    if (conversion_unit == UNIT_CH)
+        NETLORE_ERROR("converting unit %s isn't supported yet",
+            njord_css_unit_convert_to_str(conversion_unit));
+    if (conversion_unit == UNIT_IC)
+        NETLORE_ERROR("converting unit %s isn't supported yet",
+            njord_css_unit_convert_to_str(conversion_unit));
+    if (conversion_unit == UNIT_REM)
+        // TODO: Return here a proper height of root element
+        return conversion_number * 16;
+    if (conversion_unit == UNIT_LH)
+        // TODO: Return here a proper line height of element
+        return conversion_number * 20;
+    if (conversion_unit == UNIT_RLH)
+        // TODO: Return here a proper line height of root element
+        return conversion_number * 20;
+    if (conversion_unit == UNIT_VW)
+        // TODO: For now we are giving the window size what about giving the real
+        //       viewport size.
+        return (heimdall_window_get_size(parser->dom->window).w / 100) 
+                    * conversion_number;
+    if (conversion_unit == UNIT_VH)
+        // TODO: For now we are giving the window size what about giving the real
+        //       viewport size.
+        return (heimdall_window_get_size(parser->dom->window).h / 100) 
+                    * conversion_number;
+    if (conversion_unit == UNIT_VI)
+        NETLORE_ERROR("converting unit %s isn't supported yet",
+            njord_css_unit_convert_to_str(conversion_unit));
+    if (conversion_unit == UNIT_VB)
+        NETLORE_ERROR("converting unit %s isn't supported yet",
+            njord_css_unit_convert_to_str(conversion_unit));
+    if (conversion_unit == UNIT_VMIN)
+        NETLORE_ERROR("converting unit %s isn't supported yet",
+            njord_css_unit_convert_to_str(conversion_unit));
+    if (conversion_unit == UNIT_VMAX)
+        NETLORE_ERROR("converting unit %s isn't supported yet",
+            njord_css_unit_convert_to_str(conversion_unit));
+    if (conversion_unit == UNIT_CM)
+        return 37.7952755906 * conversion_number;
+    if (conversion_unit == UNIT_MM)
+        return 3.7952755906 * conversion_number;
+    if (conversion_unit == UNIT_Q)
+        /* Quarter-millimeter = 1/40th of 1cm */ 
+        return (37.7952755906 / 40) * conversion_number;
+    if (conversion_unit == UNIT_IN)
+        NETLORE_ERROR("converting unit %s isn't supported yet",
+            njord_css_unit_convert_to_str(conversion_unit));
+    if (conversion_unit == UNIT_PC)
+        NETLORE_ERROR("converting unit %s isn't supported yet",
+            njord_css_unit_convert_to_str(conversion_unit));
+    if (conversion_unit == UNIT_PT)
+        NETLORE_ERROR("converting unit %s isn't supported yet",
+            njord_css_unit_convert_to_str(conversion_unit));
+    if (conversion_unit == UNIT_PX)
+            return conversion_number;
+    if (conversion_unit == UNIT_DEG)
+        NETLORE_ERROR("converting unit %s isn't supported yet",
+            njord_css_unit_convert_to_str(conversion_unit));
+    if (conversion_unit == UNIT_GRAD)
+        NETLORE_ERROR("converting unit %s isn't supported yet",
+            njord_css_unit_convert_to_str(conversion_unit));
+    if (conversion_unit == UNIT_RAD)
+        NETLORE_ERROR("converting unit %s isn't supported yet",
+            njord_css_unit_convert_to_str(conversion_unit));
+    if (conversion_unit == UNIT_TURN)
+        NETLORE_ERROR("converting unit %s isn't supported yet",
+            njord_css_unit_convert_to_str(conversion_unit));
+    if (conversion_unit == UNIT_SEC)
+        NETLORE_ERROR("converting unit %s isn't supported yet",
+            njord_css_unit_convert_to_str(conversion_unit));
+    if (conversion_unit == UNIT_MS)
+        NETLORE_ERROR("converting unit %s isn't supported yet",
+            njord_css_unit_convert_to_str(conversion_unit));
+    if (conversion_unit == UNIT_HZ)
+        NETLORE_ERROR("converting unit %s isn't supported yet",
+            njord_css_unit_convert_to_str(conversion_unit));
+    if (conversion_unit == UNIT_KHZ)
+        NETLORE_ERROR("converting unit %s isn't supported yet",
+            njord_css_unit_convert_to_str(conversion_unit));
+    if (conversion_unit == UNIT_FR)
+        NETLORE_ERROR("converting unit %s isn't supported yet",
+            njord_css_unit_convert_to_str(conversion_unit));
+    if (conversion_unit == UNIT_DPI)
+        NETLORE_ERROR("converting unit %s isn't supported yet",
+            njord_css_unit_convert_to_str(conversion_unit));
+    if (conversion_unit == UNIT_DPCM)
+        NETLORE_ERROR("converting unit %s isn't supported yet",
+            njord_css_unit_convert_to_str(conversion_unit));
+    if (conversion_unit == UNIT_DPPX)
+        NETLORE_ERROR("converting unit %s isn't supported yet",
+            njord_css_unit_convert_to_str(conversion_unit));
+
+    NETLORE_VERIFY_NOT_REACHED();
+    return 0;
 }

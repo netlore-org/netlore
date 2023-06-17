@@ -646,6 +646,9 @@ njord_css_parse_expect_style_value(css_parser_t* parser, style_t* style, css_par
         parser->index++;
         parser->curr_token = parser->lexer->tokens[parser->index];
 
+        // TODO: parse percentage too by looking is the next token an
+        //       percentage sign (%)
+
         css_value_t* css_value = njord_create_css_value(NUMBER, allocated_num);
 
         if (parser->curr_token->kind == IDENTIFIER)
