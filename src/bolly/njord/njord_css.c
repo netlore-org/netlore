@@ -28,6 +28,7 @@
  */
 
 
+#include "netlore/bolly/njord/njord_css_units.h"
 #include <SDL2/SDL_stdinc.h>
 #include <netlore/netlore.h>
 #include <netlore/netlore_utils.h>
@@ -612,8 +613,18 @@ njord_css_parse_expect_style_value(css_parser_t* parser, style_t* style, css_par
             char* end_ptr = (char*)(parser->curr_token->value + (strlen(parser->curr_token->value) * sizeof(char)));
             long long num = strtoll(parser->curr_token->value, &end_ptr, 16);
 
-            // css_value_t* css_value = njord_create_css_value(INTEGER, (void*)num);
-            // style->style_rules[style->style_rules_len - 1]->value = css_value;
+            NETLORE_DEBUG("Successfully parsed hex number: 0x%llx", num);
+            style->style_rules[style->style_rules_len - 1]->value 
+                = njord_create_css_value(INTEGER, (void*)num);
+
+            parser->index++;
+            parser->curr_token = parser->lexer->tokens[parser->index];
+
+            parse_style_rules->expect_style_rule_name  = true;
+            parse_style_rules->expect_style_rule_value = false;
+
+            if (parser->curr_token->kind != SEMICOLON)
+                CSS_WAIT_UNTIL_SEMICOLON_OR_END(parser);
 
             return 1;
         }
@@ -621,6 +632,42 @@ njord_css_parse_expect_style_value(css_parser_t* parser, style_t* style, css_par
         /* We have detected that given token numbers isn't a hex base, it's 
          * a decimal one, so basically we need to convert it into a normal
          * number and apply it to the css value */
+
+        char* end_ptr   = (char*)(parser->curr_token->value + (strlen(parser->curr_token->value) * sizeof(char)));
+        long double num = strtold(parser->curr_token->value, &end_ptr);
+
+        long double* allocated_num = malloc(sizeof(long double));
+        *allocated_num = num;
+
+        NETLORE_DEBUG("Successfully parsed number: %.8Lf", num);
+
+        /* Good! we have successfully parsed a number but now is the 
+         * next token an unit? Let's check it */
+        parser->index++;
+        parser->curr_token = parser->lexer->tokens[parser->index];
+
+        css_value_t* css_value = njord_create_css_value(NUMBER, allocated_num);
+
+        if (parser->curr_token->kind == IDENTIFIER)
+        {
+            css_unit_type_t unit = njord_css_unit_convert_from_str(parser->curr_token->value);
+            
+            if (unit != -1)
+            {
+                css_value->type = DIMENSIONS;
+                css_value->ptr_to_value = (void*)njord_create_css_dimension(unit, num);
+
+                netlore_free(allocated_num);
+            }
+        }
+
+        style->style_rules[style->style_rules_len - 1]->value = css_value;
+
+        parse_style_rules->expect_style_rule_name  = true;
+        parse_style_rules->expect_style_rule_value = false;
+
+        if (parser->curr_token->kind != SEMICOLON)
+            CSS_WAIT_UNTIL_SEMICOLON_OR_END(parser);
         
         return 1;
     }
@@ -667,6 +714,12 @@ njord_css_parse_style_rules(css_parser_t* parser)
 
     while (true)
     {
+        NETLORE_DEBUG("expect_style_rule_name=%s, expect_style_rule_separator=%s, expect_style_rule_value=%s, curr_token->value=%s",
+                            NETLORE_BOOL_AS_STR(parse_style_rules->expect_style_rule_name),
+                            NETLORE_BOOL_AS_STR(parse_style_rules->expect_style_rule_separator),
+                            NETLORE_BOOL_AS_STR(parse_style_rules->expect_style_rule_value),
+                            parser->curr_token->value);
+
         if (parser->curr_token->kind == SEMICOLON)
         {
             parser->index++;
@@ -775,11 +828,22 @@ njord_parse_css(css_lexer_t* lexer, dom_t* dom)
                         printf("rule_value->value=\"url(%s)\"\n", njord_css_value_get_unwrapped_url(rule->value));
                         break;
                     case INTEGER:
-                        printf("rule_value->value=%.8llx\n", (long long)rule->value->ptr_to_value);
+                        printf("rule_value->value=%.8llx or %llu\n", (long long)rule->value->ptr_to_value, (long long)rule->value->ptr_to_value);
                         break;
                     case NUMBER:
+                        {
+                            long double* ptr_to_ld_num = (long double*)rule->value->ptr_to_value;
+                            long double ld_num = *ptr_to_ld_num;
+                            printf("rule_value->value=%.8Lf\n", ld_num);
+                        }
                         break;
                     case DIMENSIONS:
+                        {
+                            printf("rule_value->value=%.8Lf%s\n", 
+                                ((css_dimensions_t*)rule->value->ptr_to_value)->value,
+                                njord_css_unit_convert_to_str(((css_dimensions_t*)rule->value->ptr_to_value)->unit_type));
+                        }
+                        break;
                         break;
                     case PERCENTAGE:
                         break;

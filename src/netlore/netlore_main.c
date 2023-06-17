@@ -168,6 +168,8 @@ main(int argc, char** argv)
 \n\
         span {\n\
             color: #ff00ffff;\n\
+            width: 100px;\n\
+            height: 100rem;\n\
         }\n\
     </style>\n\
 </head>\n\
