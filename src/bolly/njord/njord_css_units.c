@@ -245,16 +245,13 @@ njord_css_convert_unit_to_px(css_parser_t* parser, css_unit_type_t conversion_un
         /* Quarter-millimeter = 1/40th of 1cm */ 
         return (37.7952755906 / 40) * conversion_number;
     if (conversion_unit == UNIT_IN)
-        NETLORE_ERROR("converting unit %s isn't supported yet",
-            njord_css_unit_convert_to_str(conversion_unit));
+        return 96 * conversion_number;
     if (conversion_unit == UNIT_PC)
-        NETLORE_ERROR("converting unit %s isn't supported yet",
-            njord_css_unit_convert_to_str(conversion_unit));
+        return 16 * conversion_number;
     if (conversion_unit == UNIT_PT)
-        NETLORE_ERROR("converting unit %s isn't supported yet",
-            njord_css_unit_convert_to_str(conversion_unit));
+        return 1.33333 * conversion_number;
     if (conversion_unit == UNIT_PX)
-            return conversion_number;
+        return conversion_number;
     if (conversion_unit == UNIT_DEG)
         NETLORE_ERROR("converting unit %s isn't supported yet",
             njord_css_unit_convert_to_str(conversion_unit));
