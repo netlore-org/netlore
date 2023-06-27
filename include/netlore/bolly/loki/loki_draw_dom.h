@@ -32,4 +32,9 @@
 
 #include <netlore/netlore.h>
 
+#include <netlore/bolly/heimdall/heimdall_window.h>
+#include <netlore/bolly/njord/njord_dom.h>
+
+void loki_draw_dom(dom_t* dom, window_t* window, size2_t viewport_size, vec2_t viewport_pos);
+
 #endif /* __NETLORE_lOKI_DRAW_DOM */

@@ -56,10 +56,10 @@ typedef struct __dom_node_t {
     char* tag;
     char* content;
 
-    struct __dom_node_t** childrens;
+    struct __dom_node_t** children;
     struct __dom_node_t*  parent_node;
 
-    size_t childrens_len;
+    size_t children_len;
     size_t attrs_len;
 
     render_box_t  render_box;
@@ -77,7 +77,7 @@ render_box_t njord_create_render_box(double width, double height, double top, do
 render_box_t njord_create_render_box_empty();
 
 /*
- * Ton of utility function for looking out for childrens :3
+ * Ton of utility function for looking out for children :3
  */
 dom_node_t* njord_find_children_by_content(dom_node_t* parent, char* content);
 dom_node_t* njord_find_children_by_class(dom_node_t* parent, char* class_name);

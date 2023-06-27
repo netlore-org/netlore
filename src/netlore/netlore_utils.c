@@ -23,6 +23,7 @@
 #include <ctype.h>
 #include <netlore/netlore.h>
 #include <netlore/netlore_utils.h>
+#include <stdbool.h>
 #include <string.h>
 
 char* 
@@ -82,4 +83,13 @@ netlore_to_upper_string(char* str)
 {
     for (int i = 0; i < (int)strlen(str); i++)
         str[i] = toupper(str[i]);
+}
+
+bool
+netlore_str_is_empty(char* str)
+{
+    if (str[0] == '\0')
+        return true;
+
+    return false;
 }

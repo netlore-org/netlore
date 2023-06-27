@@ -32,12 +32,14 @@
 
 #include <netlore/netlore.h>
 
+#include <netlore/bolly/heimdall/heimdall_rgb.h>
+
 typedef struct __builtin_color_t {
     const char*   color_name;
-    unsigned long rgba_color;
+    color_t       color_struct;
 } builtin_color_t;
 
-unsigned long njord_get_builtin_color_by_name(const char* color_name);
+color_t njord_get_builtin_color_by_name(const char* color_name);
 
 builtin_color_t** njord_get_builtin_color_array();
 

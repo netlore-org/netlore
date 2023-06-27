@@ -23,6 +23,8 @@
 #ifndef __NETLORE_NETLORE_UTILS
 #define __NETLORE_NETLORE_UTILS
 
+#include <netlore/netlore.h>
+
 char* netlore_append_to_alloc_string(char* str, const char c);
 
 char* netlore_create_copy_string(const char* str);
@@ -33,5 +35,7 @@ char* netlore_create_string_from_char(const char c);
 
 void netlore_to_lower_string(char* str);
 void netlore_to_upper_string(char* str);
+
+bool netlore_str_is_empty(char* str);
 
 #endif /* __NETLORE_NETLORE_UTILS */

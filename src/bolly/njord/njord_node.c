@@ -42,7 +42,7 @@ njord_create_node(char* tag, char* content, dom_node_t* parent_node,
     node->tag     = tag;
     node->content = content;
 
-    node->childrens = (dom_node_t**) netlore_calloc(1, sizeof(dom_node_t*));
+    node->children = (dom_node_t**) netlore_calloc(1, sizeof(dom_node_t*));
     node->attrs     = (attribute_t**)netlore_calloc(1, sizeof(attribute_t*));
 
     node->parent_node = parent_node;
@@ -85,10 +85,10 @@ njord_create_render_box(double width, double height, double top, double left, do
 dom_node_t* 
 njord_find_children_by_content(dom_node_t* parent, char* content)
 {
-    for (int i = 0; i < (int)parent->childrens_len; i++)
+    for (int i = 0; i < (int)parent->children_len; i++)
     {
-        if (strcmp(parent->childrens[i]->content, content) == 0)
-            return parent->childrens[i];
+        if (strcmp(parent->children[i]->content, content) == 0)
+            return parent->children[i];
     }
 
     return NULL;
@@ -97,9 +97,9 @@ njord_find_children_by_content(dom_node_t* parent, char* content)
 dom_node_t* 
 njord_find_children_by_class(dom_node_t* parent, char* class_name)
 {
-    for (int i = 0; i < (int)parent->childrens_len; i++)
+    for (int i = 0; i < (int)parent->children_len; i++)
     {
-        dom_node_t* children = parent->childrens[i];
+        dom_node_t* children = parent->children[i];
 
         char* value = netlore_create_copy_string(
                                 (const char*)njord_find_attr_by_name(children, "class")->value);
@@ -119,9 +119,9 @@ njord_find_children_by_class(dom_node_t* parent, char* class_name)
 dom_node_t* 
 njord_find_children_by_id(dom_node_t* parent, char* id)
 {
-    for (int i = 0; i < (int)parent->childrens_len; i++)
+    for (int i = 0; i < (int)parent->children_len; i++)
     {
-        dom_node_t* children = parent->childrens[i];
+        dom_node_t* children = parent->children[i];
 
         attribute_t* id_attr = njord_find_attr_by_name(children, "id");
         if (strcmp(id_attr->value, id) == 0)
@@ -137,10 +137,10 @@ njord_find_children_by_id(dom_node_t* parent, char* id)
 dom_node_t* 
 njord_find_children_by_tag(dom_node_t* parent, char* tag)
 {
-    for (int i = 0; i < (int)parent->childrens_len; i++)
+    for (int i = 0; i < (int)parent->children_len; i++)
     {
-        if (strcmp(parent->childrens[i]->tag, tag) == 0)
-            return parent->childrens[i];
+        if (strcmp(parent->children[i]->tag, tag) == 0)
+            return parent->children[i];
     }
 
     return NULL;
@@ -149,10 +149,10 @@ njord_find_children_by_tag(dom_node_t* parent, char* tag)
 void 
 njord_add_children(dom_node_t* parent, dom_node_t* children)
 {
-    parent->childrens_len++;
-    parent->childrens[parent->childrens_len - 1] = children;
-    parent->childrens = (dom_node_t**)
-                            netlore_realloc(parent->childrens, (parent->childrens_len + 1) * sizeof(dom_node_t*));
+    parent->children_len++;
+    parent->children[parent->children_len - 1] = children;
+    parent->children = (dom_node_t**)
+                            netlore_realloc(parent->children, (parent->children_len + 1) * sizeof(dom_node_t*));
 }
 
 void 
@@ -206,9 +206,9 @@ njord_create_render_box_empty()
 dom_node_t*
 njord_find_node_in_node_by_content(dom_node_t* parent, char* content)
 {
-    for (int i = 0; i < (int)parent->childrens_len; i++)
+    for (int i = 0; i < (int)parent->children_len; i++)
     {
-        dom_node_t* children = parent->childrens[i];
+        dom_node_t* children = parent->children[i];
 
         if (strcmp(children->content, content) == 0)
             return children;
@@ -227,9 +227,9 @@ njord_find_node_in_node_by_content(dom_node_t* parent, char* content)
 dom_node_t* 
 njord_find_node_in_node_by_class(dom_node_t* parent, char* class_name)
 {
-    for (int i = 0; i < (int)parent->childrens_len; i++)
+    for (int i = 0; i < (int)parent->children_len; i++)
     {
-        dom_node_t* children = parent->childrens[i];
+        dom_node_t* children = parent->children[i];
 
         attribute_t* class_attr = njord_find_attr_by_name(children, "class");
         if (class_attr == NULL)
@@ -262,9 +262,9 @@ njord_find_node_in_node_by_class(dom_node_t* parent, char* class_name)
 dom_node_t* 
 njord_find_node_in_node_by_tag(dom_node_t* parent, char* tag)
 {
-    for (int i = 0; i < (int)parent->childrens_len; i++)
+    for (int i = 0; i < (int)parent->children_len; i++)
     {
-        dom_node_t* children = parent->childrens[i];
+        dom_node_t* children = parent->children[i];
 
         if (strcmp(children->tag, tag) == 0)
             return children;
@@ -283,9 +283,9 @@ njord_find_node_in_node_by_tag(dom_node_t* parent, char* tag)
 dom_node_t* 
 njord_find_node_in_node_by_id(dom_node_t* parent, char* id)
 {
-    for (int i = 0; i < (int)parent->childrens_len; i++)
+    for (int i = 0; i < (int)parent->children_len; i++)
     {
-        dom_node_t* children = parent->childrens[i];
+        dom_node_t* children = parent->children[i];
 
         attribute_t* id_attr = njord_find_attr_by_name(children, "id");
         if (id_attr == NULL)

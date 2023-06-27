@@ -45,7 +45,7 @@ njord_create_dom(window_t* window)
      * everything which is needed*/
     dom_t* dom     = (dom_t*)netlore_calloc(1, sizeof(dom_t));
     dom->root_node = njord_create_node("root", "", NULL, njord_create_attributes_list(),
-                                       njord_create_render_box_empty(), NULL);
+                                       njord_create_render_box_empty(), njord_create_style());
     dom->request   = NULL;
     dom->title     = "None";
     dom->window    = window;
@@ -104,9 +104,9 @@ njord_find_node_in_dom_by_content(dom_t* dom, char* content)
     dom_node_t* root = dom->root_node;
 
     /* Loop through every child in the root node */
-    for (int i = 0; i < (int)root->childrens_len; i++)
+    for (int i = 0; i < (int)root->children_len; i++)
     {
-        dom_node_t* children = root->childrens[i];
+        dom_node_t* children = root->children[i];
 
         if (strcmp(children->content, content) == 0)
             return children;
@@ -132,9 +132,9 @@ njord_find_node_in_dom_by_class(dom_t* dom, char* class_name)
     dom_node_t* root = dom->root_node;
 
     /* Loop through every child in the root node */
-    for (int i = 0; i < (int)root->childrens_len; i++)
+    for (int i = 0; i < (int)root->children_len; i++)
     {
-        dom_node_t* children = root->childrens[i];
+        dom_node_t* children = root->children[i];
 
         attribute_t* class_attr = njord_find_attr_by_name(children, "class");
         if (class_attr == NULL)
@@ -174,9 +174,9 @@ njord_find_node_in_dom_by_tag(dom_t* dom, char* tag)
     dom_node_t* root = dom->root_node;
 
     /* Loop through every child in the root node */
-    for (int i = 0; i < (int)root->childrens_len; i++)
+    for (int i = 0; i < (int)root->children_len; i++)
     {
-        dom_node_t* children = root->childrens[i];
+        dom_node_t* children = root->children[i];
 
         if (strcmp(children->tag, tag) == 0)
             return children;
@@ -202,9 +202,9 @@ njord_find_node_in_dom_by_id(dom_t* dom, char* id)
     dom_node_t* root = dom->root_node;
 
     /* Loop through every child in the root node */
-    for (int i = 0; i < (int)root->childrens_len; i++)
+    for (int i = 0; i < (int)root->children_len; i++)
     {
-        dom_node_t* children = root->childrens[i];
+        dom_node_t* children = root->children[i];
 
         attribute_t* id_attr = njord_find_attr_by_name(children, "id");
         if (id_attr == NULL)
@@ -233,25 +233,25 @@ void
 njord_dump_tree(dom_t* dom, dom_node_t* start_node, int spacing)
 {
     /* Loop through every child in the root node */
-    for (int i = 0; i < (int)start_node->childrens_len; i++)
+    for (int i = 0; i < (int)start_node->children_len; i++)
     {
-        dom_node_t* children = start_node->childrens[i];
+        dom_node_t* children = start_node->children[i];
 
         char* spacing_string = netlore_gen_spacing(spacing);
         printf("\n%s{\n\
 %s    \"\e[0;33mtag\e[0m\": \"%s\",\n\
 %s    \"\e[0;33mcontent\e[0m\": \"%s\",\n\
-%s    \"\e[0;33mchildrens_len\e[0m\": \"%d\",\n\
+%s    \"\e[0;33mchildren_len\e[0m\": \"%d\",\n\
 %s    \"\e[0;33mattrs_len\e[0m\": \"%d\",\n\
 %s    \"\e[0;33mattrs\e[0m\": [%s],\n\
-%s    \"\e[0;33mchildrens\e[0m\": [",
+%s    \"\e[0;33mchildren\e[0m\": [",
         spacing_string, spacing_string, children->tag, 
         spacing_string, children->content, spacing_string,
-        (int)children->childrens_len, spacing_string, (int)children->attrs_len, 
+        (int)children->children_len, spacing_string, (int)children->attrs_len, 
         spacing_string, njord_get_attrs_as_string(children->attrs, children->attrs_len),
         spacing_string);
 
-        if (children->childrens_len != 0)
+        if (children->children_len != 0)
         {
             njord_dump_tree(dom, children, spacing + 2);
             printf("%s    ]\n%s}\n", spacing_string, spacing_string);
@@ -261,3 +261,28 @@ njord_dump_tree(dom_t* dom, dom_node_t* start_node, int spacing)
     }
 }
 
+void
+njord_clean_up_node(dom_node_t* node)
+{
+    for (int i = 0; i < (int)node->children_len; i++)
+        njord_clean_up_node(node->children[i]);
+    free(node->children);
+
+    for (int i = 0; i < (int)node->attrs_len; i++)
+        free(node->attrs[i]);
+    free(node->attrs);
+
+    for (int i = 0; i < (int)node->style->style_rules_len; i++)
+        free(node->style->style_rules[i]);
+    free(node->style->style_rules);
+
+    free(node);
+}
+
+void 
+njord_clean_up_dom(dom_t* dom)
+{
+    free(dom->request);
+    njord_clean_up_node(dom->root_node);
+    free(dom);
+}

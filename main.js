@@ -1,40 +1,230 @@
-let units = [
-    `UNIT_EM`,
-    `UNIT_EX`,
-    `UNIT_CAP`,
-    `UNIT_CH`,
-    `UNIT_IC`,
-    `UNIT_REM`,
-    `UNIT_LH`,
-    `UNIT_RLH`,
-    `UNIT_VW`,
-    `UNIT_VH`,
-    `UNIT_VI`,
-    `UNIT_VB`,
-    `UNIT_VMIN`,
-    `UNIT_VMAX`,
-    `UNIT_CM`,
-    `UNIT_MM`,
-    `UNIT_Q`,
-    `UNIT_IN`,
-    `UNIT_PC`,
-    `UNIT_PT`,
-    `UNIT_PX`,
-    `UNIT_DEG`,
-    `UNIT_GRAD`,
-    `UNIT_RAD`,
-    `UNIT_TURN`,
-    `UNIT_SEC`,
-    `UNIT_MS`,
-    `UNIT_HZ`,
-    `UNIT_KHZ`,
-    `UNIT_FR`,
-    `UNIT_DPI`,
-    `UNIT_DPCM`,
-    `UNIT_DPPX`
-];
+let text = {
+    { 'aliceblue', heimdall_create_color_rgba(0xf0, 0xf8, 0xff, 0xff) },
+    {
+      'antiquewhite',
+      heimdall_create_color_rgba(0xfa, 0xeb, 0xd7, 0xff)
+    },
+    { 'aqua', heimdall_create_color_rgba(0x00, 0xff, 0xff, 0xff) },
+    { 'aquamarine', heimdall_create_color_rgba(0x7f, 0xff, 0xd4, 0xff) },
+    { 'azure', heimdall_create_color_rgba(0xf0, 0xff, 0xff, 0xff) },
+    { 'beige', heimdall_create_color_rgba(0xf5, 0xf5, 0xdc, 0xff) },
+    { 'bisque', heimdall_create_color_rgba(0xff, 0xe4, 0xc4, 0xff) },
+    { 'black', heimdall_create_color_rgba(0x00, 0x00, 0x00, 0xff) },
+    {
+      'blanchedalmond',
+      heimdall_create_color_rgba(0xff, 0xeb, 0xcd, 0xff)
+    },
+    { 'blue', heimdall_create_color_rgba(0x00, 0x00, 0xff, 0xff) },
+    { 'blueviolet', heimdall_create_color_rgba(0x8a, 0x2b, 0xe2, 0xff) },
+    { 'brown', heimdall_create_color_rgba(0xa5, 0x2a, 0x2a, 0xff) },
+    { 'burlywood', heimdall_create_color_rgba(0xde, 0xb8, 0x87, 0xff) },
+    { 'cadetblue', heimdall_create_color_rgba(0x5f, 0x9e, 0xa0, 0xff) },
+    { 'chartreuse', heimdall_create_color_rgba(0x7f, 0xff, 0x00, 0xff) },
+    { 'chocolate', heimdall_create_color_rgba(0xd2, 0x69, 0x1e, 0xff) },
+    { 'coral', heimdall_create_color_rgba(0xff, 0x7f, 0x50, 0xff) },
+    {
+      'cornflowerblue',
+      heimdall_create_color_rgba(0x64, 0x95, 0xed, 0xff)
+    },
+    { 'cornsilk', heimdall_create_color_rgba(0xff, 0xf8, 0xdc, 0xff) },
+    { 'crimson', heimdall_create_color_rgba(0xdc, 0x14, 0x3c, 0xff) },
+    { 'cyan', heimdall_create_color_rgba(0x00, 0xff, 0xff, 0xff) },
+    { 'darkblue', heimdall_create_color_rgba(0x00, 0x00, 0x8b, 0xff) },
+    { 'darkcyan', heimdall_create_color_rgba(0x00, 0x8b, 0x8b, 0xff) },
+    {
+      'darkgoldenrod',
+      heimdall_create_color_rgba(0xb8, 0x86, 0x0b, 0xff)
+    },
+    { 'darkgray', heimdall_create_color_rgba(0xa9, 0xa9, 0xa9, 0xff) },
+    { 'darkgrey', heimdall_create_color_rgba(0xa9, 0xa9, 0xa9, 0xff) },
+    { 'darkgreen', heimdall_create_color_rgba(0x00, 0x64, 0x00, 0xff) },
+    { 'darkkhaki', heimdall_create_color_rgba(0xbd, 0xb7, 0x6b, 0xff) },
+    { 'darkmagenta', heimdall_create_color_rgba(0x8b, 0x00, 0x8b, 0xff) },
+    {
+      'darkolivegreen',
+      heimdall_create_color_rgba(0x55, 0x6b, 0x2f, 0xff)
+    },
+    { 'darkorange', heimdall_create_color_rgba(0xff, 0x8c, 0x00, 0xff) },
+    { 'darkorchid', heimdall_create_color_rgba(0x99, 0x32, 0xcc, 0xff) },
+    { 'darkred', heimdall_create_color_rgba(0x8b, 0x00, 0x00, 0xff) },
+    { 'darksalmon', heimdall_create_color_rgba(0xe9, 0x96, 0x7a, 0xff) },
+    {
+      'darkseagreen',
+      heimdall_create_color_rgba(0x8f, 0xbc, 0x8f, 0xff)
+    },
+    {
+      'darkslateblue',
+      heimdall_create_color_rgba(0x48, 0x3d, 0x8b, 0xff)
+    },
+    {
+      'darkslategray',
+      heimdall_create_color_rgba(0x2f, 0x4f, 0x4f, 0xff)
+    },
+    {
+      'darkslategrey',
+      heimdall_create_color_rgba(0x2f, 0x4f, 0x4f, 0xff)
+    },
+    {
+      'darkturquoise',
+      heimdall_create_color_rgba(0x00, 0xce, 0xd1, 0xff)
+    },
+    { 'darkviolet', heimdall_create_color_rgba(0x94, 0x00, 0xd3, 0xff) },
+    { 'deeppink', heimdall_create_color_rgba(0xff, 0x14, 0x93, 0xff) },
+    { 'deepskyblue', heimdall_create_color_rgba(0x00, 0xbf, 0xff, 0xff) },
+    { 'dimgray', heimdall_create_color_rgba(0x69, 0x69, 0x69, 0xff) },
+    { 'dimgrey', heimdall_create_color_rgba(0x69, 0x69, 0x69, 0xff) },
+    { 'dodgerblue', heimdall_create_color_rgba(0x1e, 0x90, 0xff, 0xff) },
+    { 'firebrick', heimdall_create_color_rgba(0xb2, 0x22, 0x22, 0xff) },
+    { 'floralwhite', heimdall_create_color_rgba(0xff, 0xfa, 0xf0, 0xff) },
+    { 'forestgreen', heimdall_create_color_rgba(0x22, 0x8b, 0x22, 0xff) },
+    { 'fuchsia', heimdall_create_color_rgba(0xff, 0x00, 0xff, 0xff) },
+    { 'gainsboro', heimdall_create_color_rgba(0xdc, 0xdc, 0xdc, 0xff) },
+    { 'ghostwhite', heimdall_create_color_rgba(0xf8, 0xf8, 0xff, 0xff) },
+    { 'gold', heimdall_create_color_rgba(0xff, 0xd7, 0x00, 0xff) },
+    { 'goldenrod', heimdall_create_color_rgba(0xda, 0xa5, 0x20, 0xff) },
+    { 'gray', heimdall_create_color_rgba(0x80, 0x80, 0x80, 0xff) },
+    { 'grey', heimdall_create_color_rgba(0x80, 0x80, 0x80, 0xff) },
+    { 'green', heimdall_create_color_rgba(0x00, 0x80, 0x00, 0xff) },
+    { 'greenyellow', heimdall_create_color_rgba(0xad, 0xff, 0x2f, 0xff) },
+    { 'honeydew', heimdall_create_color_rgba(0xf0, 0xff, 0xf0, 0xff) },
+    { 'hotpink', heimdall_create_color_rgba(0xff, 0x69, 0xb4, 0xff) },
+    { 'indianred', heimdall_create_color_rgba(0xcd, 0x5c, 0x5c, 0xff) },
+    { 'indigo', heimdall_create_color_rgba(0x4b, 0x00, 0x82, 0xff) },
+    { 'ivory', heimdall_create_color_rgba(0xff, 0xff, 0xf0, 0xff) },
+    { 'khaki', heimdall_create_color_rgba(0xf0, 0xe6, 0x8c, 0xff) },
+    { 'lavender', heimdall_create_color_rgba(0xe6, 0xe6, 0xfa, 0xff) },
+    {
+      'lavenderblush',
+      heimdall_create_color_rgba(0xff, 0xf0, 0xf5, 0xff)
+    },
+    { 'lawngreen', heimdall_create_color_rgba(0x7c, 0xfc, 0x00, 0xff) },
+    {
+      'lemonchiffon',
+      heimdall_create_color_rgba(0xff, 0xfa, 0xcd, 0xff)
+    },
+    { 'lightblue', heimdall_create_color_rgba(0xad, 0xd8, 0xe6, 0xff) },
+    { 'lightcoral', heimdall_create_color_rgba(0xf0, 0x80, 0x80, 0xff) },
+    { 'lightcyan', heimdall_create_color_rgba(0xe0, 0xff, 0xff, 0xff) },
+    {
+      'lightgoldenrodyellow',
+      heimdall_create_color_rgba(0xfa, 0xfa, 0xd2, 0xff)
+    },
+    { 'lightgray', heimdall_create_color_rgba(0xd3, 0xd3, 0xd3, 0xff) },
+    { 'lightgrey', heimdall_create_color_rgba(0xd3, 0xd3, 0xd3, 0xff) },
+    { 'lightgreen', heimdall_create_color_rgba(0x90, 0xee, 0x90, 0xff) },
+    { 'lightpink', heimdall_create_color_rgba(0xff, 0xb6, 0xc1, 0xff) },
+    { 'lightsalmon', heimdall_create_color_rgba(0xff, 0xa0, 0x7a, 0xff) },
+    {
+      'lightseagreen',
+      heimdall_create_color_rgba(0x20, 0xb2, 0xaa, 0xff)
+    },
+    {
+      'lightskyblue',
+      heimdall_create_color_rgba(0x87, 0xce, 0xfa, 0xff)
+    },
+    {
+      'lightslategray',
+      heimdall_create_color_rgba(0x77, 0x88, 0x99, 0xff)
+    },
+    {
+      'lightslategrey',
+      heimdall_create_color_rgba(0x77, 0x88, 0x99, 0xff)
+    },
+    {
+      'lightsteelblue',
+      heimdall_create_color_rgba(0xb0, 0xc4, 0xde, 0xff)
+    },
+    { 'lightyellow', heimdall_create_color_rgba(0xff, 0xff, 0xe0, 0xff) },
+    { 'lime', heimdall_create_color_rgba(0x00, 0xff, 0x00, 0xff) },
+    { 'limegreen', heimdall_create_color_rgba(0x32, 0xcd, 0x32, 0xff) },
+    { 'linen', heimdall_create_color_rgba(0xfa, 0xf0, 0xe6, 0xff) },
+    { 'magenta', heimdall_create_color_rgba(0xff, 0x00, 0xff, 0xff) },
+    { 'maroon', heimdall_create_color_rgba(0x80, 0x00, 0x00, 0xff) },
+    {
+      'mediumaquamarine',
+      heimdall_create_color_rgba(0x66, 0xcd, 0xaa, 0xff)
+    },
+    { 'mediumblue', heimdall_create_color_rgba(0x00, 0x00, 0xcd, 0xff) },
+    {
+      'mediumorchid',
+      heimdall_create_color_rgba(0xba, 0x55, 0xd3, 0xff)
+    },
+    {
+      'mediumpurple',
+      heimdall_create_color_rgba(0x93, 0x70, 0xdb, 0xff)
+    },
+    { 'mediumseagreen', heimdall_create_color_rgba(0x3c, 0xb3, 0x71, 0xff) },
+    { 'mediumslateblue', heimdall_create_color_rgba(0x7b, 0x68, 0xee, 0xff) },
+    { 'mediumspringgreen', heimdall_create_color_rgba(0x00, 0xfa, 0x9a, 0xff) },
+    { 'mediumturquoise', heimdall_create_color_rgba(0x48, 0xd1, 0xcc, 0xff) },
+    { 'mediumvioletred', heimdall_create_color_rgba(0xc7, 0x15, 0x85, 0xff) },
+    { 'midnightblue', heimdall_create_color_rgba(0x19, 0x19, 0x70, 0xff) },
+    { 'mintcream', heimdall_create_color_rgba(0xf5, 0xff, 0xfa, 0xff) },
+    { 'mistyrose', heimdall_create_color_rgba(0xff, 0xe4, 0xe1, 0xff) },
+    { 'moccasin', heimdall_create_color_rgba(0xff, 0xe4, 0xb5, 0xff) },
+    { 'navajowhite', heimdall_create_color_rgba(0xff, 0xde, 0xad, 0xff) },
+    { 'navy', heimdall_create_color_rgba(0x00, 0x00, 0x80, 0xff) },
+    { 'oldlace', heimdall_create_color_rgba(0xfd, 0xf5, 0xe6, 0xff) },
+    { 'olive', heimdall_create_color_rgba(0x80, 0x80, 0x00, 0xff) },
+    { 'olivedrab', heimdall_create_color_rgba(0x6b, 0x8e, 0x23, 0xff) },
+    { 'orange', heimdall_create_color_rgba(0xff, 0xa5, 0x00, 0xff) },
+    { 'orangered', heimdall_create_color_rgba(0xff, 0x45, 0x00, 0xff) },
+    { 'orchid', heimdall_create_color_rgba(0xda, 0x70, 0xd6, 0xff) },
+    { 'palegoldenrod', heimdall_create_color_rgba(0xee, 0xe8, 0xaa, 0xff) },
+    { 'palegreen', heimdall_create_color_rgba(0x98, 0xfb, 0x98, 0xff) },
+    { 'paleturquoise', heimdall_create_color_rgba(0xaf, 0xee, 0xee, 0xff) },
+    { 'palevioletred', heimdall_create_color_rgba(0xdb, 0x70, 0x93, 0xff) },
+    { 'papayawhip', heimdall_create_color_rgba(0xff, 0xef, 0xd5, 0xff) },
+    { 'peachpuff', heimdall_create_color_rgba(0xff, 0xda, 0xb9, 0xff) },
+    { 'peru', heimdall_create_color_rgba(0xcd, 0x85, 0x3f, 0xff) },
+    { 'pink', heimdall_create_color_rgba(0xff, 0xc0, 0xcb, 0xff) },
+    { 'plum', heimdall_create_color_rgba(0xdd, 0xa0, 0xdd, 0xff) },
+    { 'powderblue', heimdall_create_color_rgba(0xb0, 0xe0, 0xe6, 0xff) },
+    { 'purple', heimdall_create_color_rgba(0x80, 0x00, 0x80, 0xff) },
+    { 'rebeccapurple', heimdall_create_color_rgba(0x66, 0x33, 0x99, 0xff)},
+    { 'red', heimdall_create_color_rgba(0xff, 0x00, 0x00, 0xff) },
+    { 'rosybrown', heimdall_create_color_rgba(0xbc, 0x8f, 0x8f, 0xff) },
+    { 'royalblue', heimdall_create_color_rgba(0x41, 0x69, 0xe1, 0xff) },
+    { 'saddlebrown', heimdall_create_color_rgba(0x8b, 0x45, 0x13, 0xff) },
+    { 'salmon', heimdall_create_color_rgba(0xfa, 0x80, 0x72, 0xff) },
+    { 'sandybrown', heimdall_create_color_rgba(0xf4, 0xa4, 0x60, 0xff) },
+    { 'seagreen', heimdall_create_color_rgba(0x2e, 0x8b, 0x57, 0xff) },
+    { 'seashell', heimdall_create_color_rgba(0xff, 0xf5, 0xee, 0xff) },
+    { 'sienna', heimdall_create_color_rgba(0xa0, 0x52, 0x2d, 0xff) },
+    { 'silver', heimdall_create_color_rgba(0xc0, 0xc0, 0xc0, 0xff) },
+    { 'skyblue', heimdall_create_color_rgba(0x87, 0xce, 0xeb, 0xff) },
+    { 'slateblue', heimdall_create_color_rgba(0x6a, 0x5a, 0xcd, 0xff) },
+    { 'slategray', heimdall_create_color_rgba(0x70, 0x80, 0x90, 0xff) },
+    { 'slategrey', heimdall_create_color_rgba(0x70, 0x80, 0x90, 0xff) },
+    { 'snow', heimdall_create_color_rgba(0xff, 0xfa, 0xfa, 0xff) },
+    { 'springgreen', heimdall_create_color_rgba(0x00, 0xff, 0x7f, 0xff) },
+    { 'steelblue', heimdall_create_color_rgba(0x46, 0x82, 0xb4, 0xff) },
+    { 'tan', heimdall_create_color_rgba(0xd2, 0xb4, 0x8c, 0xff) },
+    { 'teal', heimdall_create_color_rgba(0x00, 0x80, 0x80, 0xff) },
+    { 'thistle', heimdall_create_color_rgba(0xd8, 0xbf, 0xd8, 0xff) },
+    { 'tomato', heimdall_create_color_rgba(0xff, 0x63, 0x47, 0xff) },
+    { 'turquoise', heimdall_create_color_rgba(0x40, 0xe0, 0xd0, 0xff) },
+    { 'violet', heimdall_create_color_rgba(0xee, 0x82, 0xee, 0xff) },
+    { 'wheat', heimdall_create_color_rgba(0xf5, 0xde, 0xb3, 0xff) },
+    { 'white', heimdall_create_color_rgba(0xff, 0xff, 0xff, 0xff) },
+    { 'whitesmoke', heimdall_create_color_rgba(0xf5, 0xf5, 0xf5, 0xff) },
+    { 'yellow', heimdall_create_color_rgba(0xff, 0xff, 0x00, 0xff) },
+    { 'yellowgreen', heimdall_create_color_rgba(0x9a, 0xcd, 0x32, 0xff) }
+    
+},
 
-for (unit in units)
+for (let i = 0; i < text.length; i++)
 {
-    console.log(`if (unit_type == ${units[unit]})\n\t\treturn "${units[unit].split("_")[1].toLowerCase()}";`)
-}
+    let element = text{i},;
+
+    let num = element.pop();
+
+    // heimdall_create_color_rgba
+    let r = num.charAt(0) + num.charAt(1) + num.charAt(2) + num.charAt(3);
+    let g = "0x" + num.charAt(4) + num.charAt(5);
+    let b = "0x" + num.charAt(6) + num.charAt(7);
+    let a = "0x" + num.charAt(8) + num.charAt(9);
+    element.push(`heimdall_create_color_rgba(${r},, ${g},, ${b},, ${a},)`)
+
+    console.log(element)
+},

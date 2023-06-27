@@ -30,6 +30,8 @@
 #ifndef __NETLORE_NJORD_CSS
 #define __NETLORE_NJORD_CSS
 
+#include "netlore/bolly/njord/njord_css_properties.h"
+#include "netlore/bolly/njord/njord_style.h"
 #include <netlore/netlore.h>
 
 #include <netlore/bolly/heimdall/heimdall_window.h>
@@ -88,5 +90,10 @@ void njord_parse_css(css_lexer_t* lexer, dom_t* dom);
  * dom->style_nodes and then tokenize, parse and apply
  * this style to DOM elements */
 void njord_tokenize_parse_all_css_dom(dom_t* dom);
+
+style_rule_t* njord_find_css_property_in_all_parents(dom_node_t* node, css_properties_t property);
+style_rule_t* njord_find_css_property(dom_node_t* node, css_properties_t property);
+
+void njord_css_apply_style_rules_to_objects(css_parser_t* parser, css_object_style_t* objects, style_t* styles);
 
 #endif /* __NETLORE_NJORD_CSS */

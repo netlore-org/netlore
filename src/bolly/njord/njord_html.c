@@ -357,10 +357,10 @@ njord_is_node_style(dom_t* dom, dom_node_t* node)
     /* Get the CSS Style content, the easiest way
      * to get it is just collecting the first children
      * node and check does it represents content node */
-    if (node->childrens_len == 0   ) return;
-    if (node->childrens[0]  == NULL) return;
+    if (node->children_len == 0   ) return;
+    if (node->children[0]  == NULL) return;
 
-    dom_node_t* first_children = node->childrens[0];
+    dom_node_t* first_children = node->children[0];
 
     if (strcmp(first_children->tag, "__tag") == 0)
     {
@@ -394,10 +394,10 @@ njord_parse_get_last_stack_element(dom_t* dom, dom_node_t* stack[1024], int stac
 void
 njord_loop_through_node_styles(dom_t* dom, dom_node_t* node)
 {
-    for (int i = 0; i < (int)node->childrens_len; i++)
+    for (int i = 0; i < (int)node->children_len; i++)
     {
-        njord_is_node_style(dom, node->childrens[i]);
-        njord_loop_through_node_styles(dom, node->childrens[i]);
+        njord_is_node_style(dom, node->children[i]);
+        njord_loop_through_node_styles(dom, node->children[i]);
     }
 }
 
@@ -506,7 +506,7 @@ njord_parse_html(html_lexer_t* lexer, dom_t* dom)
 
                     stack_len++;
                     stack[stack_len] = njord_create_node(tag_name, "", parent_node, attrs, 
-                                                         njord_create_render_box_empty(), NULL);
+                                                         njord_create_render_box_empty(), njord_create_style());
                     njord_add_children(parent_node, stack[stack_len]);
                 }
 
@@ -520,7 +520,7 @@ njord_parse_html(html_lexer_t* lexer, dom_t* dom)
 
                 stack_len++;
                 stack[stack_len] = njord_create_node(tag_name, "", parent_node, attrs, 
-                                                        njord_create_render_box_empty(), NULL);
+                                                        njord_create_render_box_empty(), njord_create_style());
                 
                 bool expect_token_name  = true;
                 bool expect_token_value = false;
@@ -648,17 +648,33 @@ njord_parse_html(html_lexer_t* lexer, dom_t* dom)
             dom_node_t* parent_node = njord_parse_get_last_stack_element(dom, stack, stack_len);
 
             dom_node_t* node = njord_create_node("__tag", token->value, parent_node, njord_create_attributes_list(), 
-                                                 njord_create_render_box_empty(), NULL);
+                                                 njord_create_render_box_empty(), njord_create_style());
             njord_add_children(parent_node, node);
         }
         else 
             continue;
     }
 
-    for (int i = 0; i < (int)dom->root_node->childrens_len; i++)
+    for (int i = 0; i < (int)dom->root_node->children_len; i++)
     {
-        njord_is_node_style(dom, dom->root_node->childrens[i]);
-        njord_loop_through_node_styles(dom, dom->root_node->childrens[i]);
+        njord_is_node_style(dom, dom->root_node->children[i]);
+        njord_loop_through_node_styles(dom, dom->root_node->children[i]);
     }
-    // njord_dump_tree(dom, dom->root_node, 0);
+    njord_dump_tree(dom, dom->root_node, 0);
+}
+
+void
+njord_clean_up_token(html_token_t* token)
+{
+    free(token->value);
+    free(token);
+}
+
+void 
+njord_clean_up_lexer(html_lexer_t* lexer)
+{
+    for (int i = 0; i < lexer->tokens_len; i++)
+        njord_clean_up_token(lexer->tokens[i]);
+    free(lexer->tokens);
+    free(lexer);
 }

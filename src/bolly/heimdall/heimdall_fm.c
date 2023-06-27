@@ -94,6 +94,7 @@ heimdall_fm_get_max_size_font()
 }
 
 void heimdall_clean_up_fonts();
+
 TTF_Font* 
 heimdall_get_default_font(int size)
 {

@@ -27,7 +27,6 @@
  *  - https://github.com/netlore-org/netlore
  */
 
-
 #include "netlore/bolly/njord/njord_css_units.h"
 #include <SDL2/SDL_stdinc.h>
 #include <netlore/netlore.h>
@@ -113,6 +112,11 @@ njord_css_tokenize_short_tokens(css_lexer_t* lexer)
         case '#': 
             CSS_CREATE_APPEND_TOKEN(lexer, HASH, "#");
             lexer->hex_starts = true;
+            lexer->space      = false;
+
+            return true;
+        case '%': 
+            CSS_CREATE_APPEND_TOKEN(lexer, PERCENT, "%");
             lexer->space      = false;
 
             return true;
@@ -447,6 +451,7 @@ njord_css_parse_expect_style_rule_name(css_parser_t* parser, style_t* style, css
         /* 1. Validate is it a correct rule style name
             *    if not send an error and return NULL */
         css_properties_t css_property = njord_parse_css_property(parser->curr_token->value);
+        printf("%s\n", parser->curr_token->value);
 
         if (css_property == (css_properties_t)-1)
         {
@@ -538,10 +543,11 @@ njord_css_parse_expect_style_value(css_parser_t* parser, style_t* style, css_par
     {
         /* First of all look up isn't it a color */
         netlore_to_lower_string(parser->curr_token->value);
-        unsigned long color = 
+        color_t color = 
                 njord_get_builtin_color_by_name((const char*)parser->curr_token->value);
+        printf("%d, %d, %d, %d\n", color.r, color.g, color.b, color.a);
 
-        if (color == 0x00000000)
+        if (color.r == 0 && color.g == 0 && color.b == 0 && color.a == 0)
         {
             /* Just set value as an custom ident or keyword */
 
@@ -579,7 +585,13 @@ njord_css_parse_expect_style_value(css_parser_t* parser, style_t* style, css_par
         {
             /* Create a number value for color */
 
-            css_value_t* css_value = njord_create_css_value(INTEGER, (void*)color);
+            unsigned long color_hex = (((unsigned long)color.r << 24) |
+                                       ((unsigned long)color.g << 16) |
+                                       ((unsigned long)color.b << 8) |
+                                                       color.a);
+
+            printf("%08lx\n", color_hex);
+            css_value_t* css_value = njord_create_css_value(INTEGER, (void*)color_hex);
             style->style_rules[style->style_rules_len - 1]->value = css_value;
             // style->style_rules_len++;
             // style->style_rules = (style_rule_t**)
@@ -646,22 +658,24 @@ njord_css_parse_expect_style_value(css_parser_t* parser, style_t* style, css_par
         parser->index++;
         parser->curr_token = parser->lexer->tokens[parser->index];
 
-        // TODO: parse percentage too by looking is the next token an
-        //       percentage sign (%)
-
         css_value_t* css_value = njord_create_css_value(NUMBER, allocated_num);
 
         if (parser->curr_token->kind == IDENTIFIER)
         {
             css_unit_type_t unit = njord_css_unit_convert_from_str(parser->curr_token->value);
             
-            if (unit != -1)
+            if ((int)unit != -1)
             {
                 css_value->type = DIMENSIONS;
                 css_value->ptr_to_value = (void*)njord_create_css_dimension(unit, num);
 
                 netlore_free(allocated_num);
             }
+        }
+
+        if (parser->curr_token->kind == PERCENT)
+        {
+            css_value->type = PERCENTAGE;
         }
 
         style->style_rules[style->style_rules_len - 1]->value = css_value;
@@ -717,11 +731,11 @@ njord_css_parse_style_rules(css_parser_t* parser)
 
     while (true)
     {
-        NETLORE_DEBUG("expect_style_rule_name=%s, expect_style_rule_separator=%s, expect_style_rule_value=%s, curr_token->value=%s",
-                            NETLORE_BOOL_AS_STR(parse_style_rules->expect_style_rule_name),
-                            NETLORE_BOOL_AS_STR(parse_style_rules->expect_style_rule_separator),
-                            NETLORE_BOOL_AS_STR(parse_style_rules->expect_style_rule_value),
-                            parser->curr_token->value);
+        // NETLORE_DEBUG("expect_style_rule_name=%s, expect_style_rule_separator=%s, expect_style_rule_value=%s, curr_token->value=%s",
+        //                     NETLORE_BOOL_AS_STR(parse_style_rules->expect_style_rule_name),
+        //                     NETLORE_BOOL_AS_STR(parse_style_rules->expect_style_rule_separator),
+        //                     NETLORE_BOOL_AS_STR(parse_style_rules->expect_style_rule_value),
+        //                     parser->curr_token->value);
 
         if (parser->curr_token->kind == SEMICOLON)
         {
@@ -806,55 +820,62 @@ njord_parse_css(css_lexer_t* lexer, dom_t* dom)
             /* FIXME: parse_style_rules->style_rules gives some null values without
              *        any bigger reason. Don't have time rn for fixing it. */
 
-            for (int i = 0; i < (int)parse_style_rules->style_rules_len; i++)
-            {
-                style_rule_t* rule = parse_style_rules->style_rules[i];
-
-                if (rule == NULL) 
-                    continue;
-
-                printf(" - property=%d, rule_value->type=%d ", 
-                        rule->property, rule->value->type);
-
-                switch (rule->value->type)
+            /*
+                for (int i = 0; i < (int)parse_style_rules->style_rules_len; i++)
                 {
-                    case CUSTOM_IDENT:
-                        printf("rule_value->value=\"%s\"\n", njord_css_value_get_unwrapped_custom_ident(rule->value));
-                        break;
-                    case KEYWORD_VALUES:
-                        printf("rule_value->value=\"%s\"\n", njord_css_value_get_unwrapped_keyword_values(rule->value));
-                        break;
-                    case STRING:
-                        printf("rule_value->value=\"%s\"\n", njord_css_value_get_unwrapped_string(rule->value));
-                        break;
-                    case URL:
-                        printf("rule_value->value=\"url(%s)\"\n", njord_css_value_get_unwrapped_url(rule->value));
-                        break;
-                    case INTEGER:
-                        printf("rule_value->value=%.8llx or %llu\n", (long long)rule->value->ptr_to_value, (long long)rule->value->ptr_to_value);
-                        break;
-                    case NUMBER:
-                        {
-                            long double* ptr_to_ld_num = (long double*)rule->value->ptr_to_value;
-                            long double ld_num = *ptr_to_ld_num;
-                            printf("rule_value->value=%.8Lf\n", ld_num);
-                        }
-                        break;
-                    case DIMENSIONS:
-                        {
-                            printf("rule_value->value=%.8Lf%s\n", 
-                                ((css_dimensions_t*)rule->value->ptr_to_value)->value,
-                                njord_css_unit_convert_to_str(((css_dimensions_t*)rule->value->ptr_to_value)->unit_type));
-                        }
-                        break;
-                        break;
-                    case PERCENTAGE:
-                        break;
-                    default:
-                        printf("\n");
-                        break;
+                    style_rule_t* rule = parse_style_rules->style_rules[i];
+
+                    if (rule == NULL) 
+                        continue;
+
+                    printf(" - property=%d, rule_value->type=%d ", 
+                            rule->property, rule->value->type);
+
+                    switch (rule->value->type)
+                    {
+                        case CUSTOM_IDENT:
+                            printf("rule_value->value=\"%s\"\n", njord_css_value_get_unwrapped_custom_ident(rule->value));
+                            break;
+                        case KEYWORD_VALUES:
+                            printf("rule_value->value=\"%s\"\n", njord_css_value_get_unwrapped_keyword_values(rule->value));
+                            break;
+                        case STRING:
+                            printf("rule_value->value=\"%s\"\n", njord_css_value_get_unwrapped_string(rule->value));
+                            break;
+                        case URL:
+                            printf("rule_value->value=\"url(%s)\"\n", njord_css_value_get_unwrapped_url(rule->value));
+                            break;
+                        case INTEGER:
+                            printf("rule_value->value=%.8llx or %llu\n", (long long)rule->value->ptr_to_value, (long long)rule->value->ptr_to_value);
+                            break;
+                        case NUMBER:
+                            {
+                                long double* ptr_to_ld_num = (long double*)rule->value->ptr_to_value;
+                                long double ld_num = *ptr_to_ld_num;
+                                printf("rule_value->value=%.8Lf\n", ld_num);
+                            }
+                            break;
+                        case DIMENSIONS:
+                            {
+                                printf("rule_value->value=%.8Lf%s\n", 
+                                    ((css_dimensions_t*)rule->value->ptr_to_value)->value,
+                                    njord_css_unit_convert_to_str(((css_dimensions_t*)rule->value->ptr_to_value)->unit_type));
+                            }
+                            break;
+                            break;
+                        case PERCENTAGE:
+                            {
+                                long double* ptr_to_ld_num = (long double*)rule->value->ptr_to_value;
+                                long double ld_num = *ptr_to_ld_num;
+                                printf("rule_value->value=%.8Lf%%\n", ld_num);
+                            }
+                            break;
+                        default:
+                            printf("\n");
+                            break;
+                    }
                 }
-            }
+            */
 
             if (parser->curr_token->kind != CLOSE_BRACE)
             {
@@ -862,8 +883,132 @@ njord_parse_css(css_lexer_t* lexer, dom_t* dom)
                 break;
             }
 
+            njord_css_apply_style_rules_to_objects(parser, nodes_objects, parse_style_rules);
+
             parser->expect_object_style_name = true;
         }
+    }
+}
+
+void 
+njord_css_apply_style_rules_to_objects_wrapper(css_parser_t* parser, css_object_style_t* objects, 
+                                               style_t* styles, dom_node_t* node)
+{
+    bool apply = false;
+
+    /* Check tags */
+    if (strcmp(node->tag, objects->obj_tag_name) == 0)
+        if (apply == false) apply = true;
+    
+    
+    /* Check Id */
+    if (apply == false)
+    {
+        attribute_t* attr = njord_find_attr_by_name(node, "id");
+        if (attr != NULL)
+            if (strcmp(attr->value, objects->obj_id_name) == 0)
+                if (apply == false) apply = true;
+    }
+
+    /* Check Classes */
+    if (apply == false)
+    {
+        // TODO: add multiply classes to find
+
+        attribute_t* attr = njord_find_attr_by_name(node, "class");
+        if (attr != NULL)
+        {
+            char* splitted = strtok(attr->value, " ");
+            
+            while (splitted != NULL)
+            {
+                if (strcmp(splitted, objects->obj_class_name) == 0)
+                {
+                    apply = true;
+                    break;
+                }
+                splitted = strtok(NULL, " ");
+            }
+        }
+    }
+
+    if (apply == true)
+    {
+        // TODO: make it work better, append style nodes to 
+        //       curr_node style nodes
+        node->style = styles;
+    }
+
+    if (node->children_len == 0) return;
+
+    for (int i = 0; i < (int)node->children_len; i++)
+    {
+        dom_node_t* curr_node = node->children[i];
+
+        njord_css_apply_style_rules_to_objects_wrapper(
+            parser, objects, styles, curr_node);
+    }
+}
+
+void
+njord_css_apply_style_rules_to_objects(css_parser_t* parser, css_object_style_t* objects, style_t* styles)
+{
+    /* This function is a little bit hard but we can do it. 
+     * Basically we need to loop through every object in DOM
+     * and look is it making our requirements based in css_object_style_t
+     * structure. */
+
+    for (int i = 0; i < (int)parser->dom->root_node->children_len; i++)
+    {
+        dom_node_t* curr_node = parser->dom->root_node->children[i];
+
+        bool apply = false;
+
+        /* Check tags */
+        if (strcmp(curr_node->tag, objects->obj_tag_name) == 0)
+            if (apply == false) apply = true;
+        
+        
+        /* Check Id */
+        if (apply == false)
+        {
+            attribute_t* attr = njord_find_attr_by_name(curr_node, "id");
+            if (attr != NULL)
+                if (strcmp(attr->value, objects->obj_id_name) == 0)
+                    if (apply == false) apply = true;
+        }
+
+        /* Check Classes */
+        if (apply == false)
+        {
+            // TODO: add multiply classes to find
+
+            attribute_t* attr = njord_find_attr_by_name(curr_node, "class");
+            if (attr != NULL)
+            {
+                char* splitted = strtok(attr->value, " ");
+                
+                while (splitted != NULL)
+                {
+                    if (strcmp(splitted, objects->obj_class_name) == 0)
+                    {
+                        apply = true;
+                        break;
+                    }
+                    splitted = strtok(NULL, " ");
+                }
+            }
+        }
+
+        if (apply == true)
+        {
+            // TODO: make it work better, append style nodes to 
+            //       curr_node style nodes
+            curr_node->style = styles;
+        }
+
+        njord_css_apply_style_rules_to_objects_wrapper(
+            parser, objects, styles, curr_node);
     }
 }
 
@@ -889,4 +1034,43 @@ njord_tokenize_parse_all_css_dom(dom_t* dom)
         css_lexer_t* css_lexer = njord_tokenize_css(css_style_val);
         njord_parse_css(css_lexer, dom);
     }
+}
+
+style_rule_t* 
+njord_find_css_property(dom_node_t* node, css_properties_t property)
+{
+    for (int i = (int)node->style->style_rules_len - 1; i >= 0; i--)
+    {
+        if (node->style->style_rules[i]->property == property)
+            return node->style->style_rules[i];
+
+    }
+
+    return NULL;
+}
+
+style_rule_t*
+njord_find_css_property_in_all_parents(dom_node_t* node, css_properties_t property)
+{
+    for (int i = (int)node->style->style_rules_len - 1; i >= 0; i--)
+    {
+        if (node->style->style_rules[i]->property == property)
+            return node->style->style_rules[i];
+
+    }
+
+    dom_node_t* parent = node->parent_node;
+
+    while (parent != NULL)
+    {
+        for (int i = (int)parent->style->style_rules_len - 1; i >= 0; i--)
+        {
+            if (parent->style->style_rules[i]->property == property)
+                return parent->style->style_rules[i];
+        }
+
+        parent = parent->parent_node;
+    }
+
+    return NULL;
 }

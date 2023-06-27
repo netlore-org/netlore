@@ -140,21 +140,21 @@ main(int argc, char** argv)
 
     ui_t* ui = heimdall_initalize_ui(window, web_content_surface);
 
-    component_t* input = heimdall_create_component(ui, HEIMDALL_COMPONENT_INPUT, heimdall_create_size2(250, 35),
-                                                       heimdall_create_vec2(10, 10), true);
-    input->input.input_default_colors = true;
-    input->input.input_value_length   = strlen("netlore.solindek.ct8.pl");
-    input->input.input_value          = malloc((size_t)((int)sizeof(char) * (int)(input->input.input_value_length + 1)));
+    // component_t* input = heimdall_create_component(ui, HEIMDALL_COMPONENT_INPUT, heimdall_create_size2(250, 35),
+    //                                                    heimdall_create_vec2(10, 10), true);
+    // input->input.input_default_colors = true;
+    // input->input.input_value_length   = strlen("netlore.solindek.ct8.pl");
+    // input->input.input_value          = malloc((size_t)((int)sizeof(char) * (int)(input->input.input_value_length + 1)));
 
-    strcpy(input->input.input_value, "netlore.solindek.ct8.pl");
-    heimdall_add_component(ui, input);
+    // strcpy(input->input.input_value, "netlore.solindek.ct8.pl");
+    // heimdall_add_component(ui, input);
 
-    component_t* button = heimdall_create_component(ui, HEIMDALL_COMPONENT_BUTTON, heimdall_create_size2(40, 35),
-                                                       heimdall_create_vec2(265, 10), true);
-    button->button.button_default_colors = true;
-    button->button.button_value          = "Go!";
-    button->button.callback              = go_callback;
-    heimdall_add_component(ui, button);
+    // component_t* button = heimdall_create_component(ui, HEIMDALL_COMPONENT_BUTTON, heimdall_create_size2(40, 35),
+    //                                                    heimdall_create_vec2(265, 10), true);
+    // button->button.button_default_colors = true;
+    // button->button.button_value          = "Go!";
+    // button->button.callback              = go_callback;
+    // heimdall_add_component(ui, button);
 
     dom_t* dom = njord_create_dom(window);
 
@@ -162,14 +162,12 @@ main(int argc, char** argv)
 <head>\n\
     <style>\n\
         body {\n\
-            background-color: red;\n\
-            background-color: black;\n\
+            background-color: gray;\n\
         }\n\
 \n\
         span {\n\
-            color: #ff00ffff;\n\
-            width: 100px;\n\
-            height: 100rem;\n\
+            color: #00ff00ff;\n\
+            font-size: 24px;\n\
         }\n\
     </style>\n\
 </head>\n\
@@ -182,9 +180,17 @@ main(int argc, char** argv)
     // njord_dump_tree(dom, dom->root_node, 0);
 
     njord_tokenize_parse_all_css_dom(dom);
-    loki_layout_dom(dom);
 
-    heimdall_window_loop(window);
+    size2_t viewport_size = heimdall_window_get_size(window);
+    vec2_t  viewport_pos  = heimdall_create_vec2(0, 0);
+
+    loki_layout_dom(dom, viewport_size);
+    loki_draw_dom(dom, window, viewport_size, viewport_pos);
+
+    heimdall_window_loop(window); 
+
+    njord_clean_up_dom(dom);
+    njord_clean_up_lexer(lex);
     
     heimdall_clean_up_fonts();
     heimdall_clean_up_window(window);

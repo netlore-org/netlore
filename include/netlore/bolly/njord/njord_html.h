@@ -59,4 +59,6 @@ void njord_parse_html(html_lexer_t* lexer, dom_t* dom);
 
 void njord_html_advance(html_lexer_t* html, int count);
 
+void njord_clean_up_lexer(html_lexer_t* lexer);
+
 #endif /* __NETLORE_NJORD_HTML */

@@ -34,6 +34,6 @@
 
 #include <netlore/bolly/njord/njord_dom.h>
 
-void loki_layout_dom(dom_t* dom);
+void loki_layout_dom(dom_t* dom, size2_t viewport_size);
 
 #endif /* __NETLORE_lOKI_LAYOUT */

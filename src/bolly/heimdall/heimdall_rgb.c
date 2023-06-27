@@ -60,7 +60,7 @@ heimdall_color_to_sdl(color_t color)
     return (SDL_Color){ color.r, color.g, color.b, color.a };
 }
 
-unsigned int 
+unsigned long 
 heimdall_create_hex_color(color_t color)
 {
     return ((color.r >> 24) | (color.g >> 16) |

@@ -46,7 +46,7 @@ color_t heimdall_create_color_rgba(unsigned char r, unsigned char g,
 
 SDL_Color heimdall_color_to_sdl(color_t color);
 
-unsigned int heimdall_create_hex_color(color_t color);
+unsigned long heimdall_create_hex_color(color_t color);
 
 # define HEIMDALL_COLOR_TO_ARGS_RGBA(color) color.r, color.g, color.b, color.a
 # define HEIMDALL_COLOR_TO_ARGS_RGB (color) color.r, color.g, color.b

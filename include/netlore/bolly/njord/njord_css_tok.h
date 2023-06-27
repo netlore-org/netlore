@@ -45,6 +45,7 @@ typedef enum __css_token_kind_t {
     COLON,     // :
     HASH,      // #
     DOT,       // .
+    PERCENT,   // %
     
     OPEN_BRACE, // {
     CLOSE_BRACE // }

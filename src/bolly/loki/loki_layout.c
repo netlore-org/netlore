@@ -44,7 +44,7 @@
 #define CALC_WIDTH_FROM_PARENT(parent) (parent->render_box.width - parent->render_box.left - parent->render_box.margin.left)
 
 void
-loki_recognize_layout_of_node(dom_t* dom, dom_node_t* node)
+loki_recognize_layout_of_node(dom_t* dom, dom_node_t* node, size2_t viewport_size)
 {
     /* 1. Apply CSS style to render box */
     
@@ -53,8 +53,19 @@ loki_recognize_layout_of_node(dom_t* dom, dom_node_t* node)
      * height, width */
     const dom_node_t* parent = node->parent_node;
 
-    node->render_box.height = CALC_HEIGHT_FROM_PARENT(parent);
-    node->render_box.width  = CALC_WIDTH_FROM_PARENT(parent);
+    if (strcmp(node->tag, "body"))
+    {
+        node->render_box.height = viewport_size.h;
+        node->render_box.width  = viewport_size.w;
+
+        node->render_box.left = 0;
+        node->render_box.top  = 0;
+        
+        njord_set_padding_node(node, 0, 0, 0, 0);
+        njord_set_margin_node (node, 0, 0, 0, 0);
+    }
+
+    NETLORE_USE(parent);
 }
 
 void
@@ -72,39 +83,37 @@ loki_debug_node_layout(dom_node_t* node)
 }
 
 void 
-loki_layout_node(dom_t* dom, dom_node_t* node)
+loki_layout_node(dom_t* dom, dom_node_t* node, size2_t viewport_size)
 {
-    loki_recognize_layout_of_node(dom, node);
+    loki_recognize_layout_of_node(dom, node, viewport_size);
 
-    if (node->childrens_len == 0) return;
+    if (node->children_len == 0) return;
 
-    for (int i = 0; i < (int)node->childrens_len; i++)
+    for (int i = 0; i < (int)node->children_len; i++)
     {
-        dom_node_t* curr_node = node->childrens[i];
+        dom_node_t* curr_node = node->children[i];
 
         loki_debug_node_layout(curr_node);
-        loki_layout_node(dom, curr_node);
+        loki_layout_node(dom, curr_node, viewport_size);
     }
 }
 
 void 
-loki_layout_dom(dom_t* dom)
+loki_layout_dom(dom_t* dom, size2_t viewport_size)
 {
-    size2_t window_size = heimdall_window_get_size(dom->window);
-
-    dom->root_node->render_box.height = window_size.h;
-    dom->root_node->render_box.width  = window_size.w;
+    dom->root_node->render_box.height = viewport_size.h;
+    dom->root_node->render_box.width  = viewport_size.w;
     dom->root_node->render_box.left   = 0;
     dom->root_node->render_box.top    = 0;
     
     njord_set_padding_node(dom->root_node, 0, 0, 0, 0);
-    njord_set_margin_node(dom->root_node, 0, 0, 0, 0);
+    njord_set_margin_node (dom->root_node, 0, 0, 0, 0);
 
-    for (int i = 0; i < (int)dom->root_node->childrens_len; i++)
+    for (int i = 0; i < (int)dom->root_node->children_len; i++)
     {
-        dom_node_t* curr_node = dom->root_node->childrens[i];
+        dom_node_t* curr_node = dom->root_node->children[i];
 
         loki_debug_node_layout(curr_node);
-        loki_layout_node(dom, curr_node);
+        loki_layout_node(dom, curr_node, viewport_size);
     }
 }

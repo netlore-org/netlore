@@ -63,4 +63,6 @@ dom_node_t* njord_find_node_in_dom_by_id(dom_t* dom, char* id);
 
 void njord_dump_tree(dom_t* dom, dom_node_t* start_node, int spacing);
 
+void njord_clean_up_dom(dom_t* dom);
+
 #endif /* __NETLORE_NJORD_DOM */
