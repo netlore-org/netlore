@@ -1,0 +1,16 @@
+- [ ] reading given table
+- [ ] table: cmap
+- [ ] table: glyf
+- [ ] table: head
+- [ ] table: hhea
+- [ ] table: hmtx
+- [ ] table: loca
+- [ ] table: maxp
+- [ ] table: name
+- [ ] table: post
+- [ ] table: cvt
+- [ ] table: fpgm
+- [ ] table: hdmx
+- [ ] table: kern
+- [ ] table: os/2
+- [ ] table: prep

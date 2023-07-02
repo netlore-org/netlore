@@ -20,28 +20,19 @@
  * THE SOFTWARE.
  */
 
-/*
- * This code is part of Njord (HTML, CSS Parser) Component
- * of Netlore project that can be found at the github
- * repository at:
- *  - https://github.com/netlore-org/netlore
- */
-
-#ifndef __NETLORE_NJORD_RENDER_BOX
-#define __NETLORE_NJORD_RENDER_BOX
+#ifndef __NETLORE_TTF_TYPES
+#define __NETLORE_TTF_TYPES
 
 #include <netlore/netlore.h>
 
-#include <netlore/bolly/heimdall/heimdall_window.h>
-#include <netlore/bolly/freja/freja_request.h>
+typedef unsigned char  ttf_u8;
+typedef unsigned short ttf_u16;
+typedef unsigned int   ttf_u32;
+typedef unsigned long  ttf_u64;
 
-#include <netlore/bolly/njord/njord_node.h>
-#include <netlore/bolly/njord/njord_dom.h>
+typedef char  ttf_i8;
+typedef short ttf_i16;
+typedef int   ttf_i32;
+typedef long  ttf_i64;
 
-void njord_set_padding_node(dom_node_t* node, double top, double bottom, double left, double right);
-void njord_set_margin_node(dom_node_t* node, double top, double bottom, double left, double right);
-
-void njord_set_padding_render_box(render_box_t* rnd_box, double top, double bottom, double left, double right);
-void njord_set_margin_render_box(render_box_t* rnd_box, double top, double bottom, double left, double right);
-
-#endif /* __NETLORE_NJORD_RENDER_BOX */
+#endif /* __NETLORE_TTF_TYPES */

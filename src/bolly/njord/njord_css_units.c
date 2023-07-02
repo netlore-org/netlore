@@ -188,7 +188,7 @@ njord_css_unit_convert_to_str(css_unit_type_t unit_type)
 }
 
 long double 
-njord_css_convert_unit_to_px(css_parser_t* parser, css_unit_type_t conversion_unit, 
+njord_css_convert_unit_to_px(dom_t* dom, css_unit_type_t conversion_unit, 
                              long double conversion_number)
 {
     if (conversion_unit == UNIT_EM)
@@ -218,12 +218,12 @@ njord_css_convert_unit_to_px(css_parser_t* parser, css_unit_type_t conversion_un
     if (conversion_unit == UNIT_VW)
         // TODO: For now we are giving the window size what about giving the real
         //       viewport size.
-        return (heimdall_window_get_size(parser->dom->window).w / 100) 
+        return (heimdall_window_get_size(dom->window).w / 100) 
                     * conversion_number;
     if (conversion_unit == UNIT_VH)
         // TODO: For now we are giving the window size what about giving the real
         //       viewport size.
-        return (heimdall_window_get_size(parser->dom->window).h / 100) 
+        return (heimdall_window_get_size(dom->window).h / 100) 
                     * conversion_number;
     if (conversion_unit == UNIT_VI)
         NETLORE_ERROR("converting unit %s isn't supported yet",

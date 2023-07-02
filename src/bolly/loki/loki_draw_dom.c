@@ -50,6 +50,9 @@
 #include <netlore/bolly/loki/loki_draw_dom.h>
 #include <netlore/bolly/loki/loki_layout.h>
 
+#define CALC_ELEMENT_POS(node)  ({ heimdall_create_vec2(node->render_box.left + node->render_box.margin.left,   \
+                                                        node->render_box.top  + node->render_box.margin.top); })
+
 void
 loki_draw_node_on_window(dom_t* dom, dom_node_t* node, window_t* window, 
                          size2_t viewport_size, vec2_t viewport_pos)
@@ -59,12 +62,6 @@ loki_draw_node_on_window(dom_t* dom, dom_node_t* node, window_t* window,
     style_rule_t* rule_size       = njord_find_css_property_in_all_parents(node, FontSize);
 
     vec2_t element_pos = heimdall_create_vec2(node->render_box.left, node->render_box.top);
-    size2_t element_size = heimdall_create_size2(node->render_box.width + 
-                                            node->render_box.margin.left + node->render_box.padding.left + 
-                                            node->render_box.margin.right + node->render_box.padding.right, 
-                                            node->render_box.height + 
-                                            node->render_box.margin.top + node->render_box.padding.top + 
-                                            node->render_box.margin.bottom + node->render_box.padding.bottom);
 
     if (rule_background != NULL)
     {
@@ -81,8 +78,19 @@ loki_draw_node_on_window(dom_t* dom, dom_node_t* node, window_t* window,
             
             // heimdall_draw_fill_rect(window, viewport_pos, viewport_size, color);
 
-            component_t* rect = heimdall_create_component(window->ui, HEIMDALL_COMPONENT_BOX, viewport_size,
-                                                          viewport_pos, true);
+            component_t* rect;
+
+            if (strcmp(node->tag, "body") == 0 || strcmp(node->tag, "html") == 0)
+            {
+                rect = heimdall_create_component(window->ui, HEIMDALL_COMPONENT_BOX, viewport_size,
+                                                            viewport_pos, true);
+            }
+            else 
+            {
+                rect = heimdall_create_component(window->ui, HEIMDALL_COMPONENT_BOX, heimdall_create_size2(node->render_box.width, node->render_box.height), 
+                                                                element_pos, true);
+            }
+
             rect->box.background = color;
             rect->box.filled     = true;
             heimdall_add_component(window->ui, rect);
@@ -101,7 +109,7 @@ loki_draw_node_on_window(dom_t* dom, dom_node_t* node, window_t* window,
             }
             else 
             {
-                rect = heimdall_create_component(window->ui, HEIMDALL_COMPONENT_BOX, element_size, 
+                rect = heimdall_create_component(window->ui, HEIMDALL_COMPONENT_BOX, heimdall_create_size2(node->render_box.width, node->render_box.height), 
                                                                 element_pos, true);
             }
 
@@ -113,8 +121,8 @@ loki_draw_node_on_window(dom_t* dom, dom_node_t* node, window_t* window,
 
     if (node->content[0] != '\0')
     {
-        component_t* text = heimdall_create_component(window->ui, HEIMDALL_COMPONENT_TEXT, element_size,
-                                                     element_pos, true);
+        component_t* text = heimdall_create_component(window->ui, HEIMDALL_COMPONENT_TEXT, heimdall_create_size2(0, 0),
+                                                     heimdall_create_vec2(element_pos.x, element_pos.y), true);
 
         if (rule_color != NULL)
         {
@@ -139,6 +147,7 @@ loki_draw_node_on_window(dom_t* dom, dom_node_t* node, window_t* window,
 
         text->text.text_size = rule_size != NULL ? ((css_dimensions_t*)rule_size->value->ptr_to_value)->value : 16;
         text->text.text_value = node->content;
+        text->text.text_line_break = node->render_box.width;
 
         heimdall_add_component(window->ui, text);
     }

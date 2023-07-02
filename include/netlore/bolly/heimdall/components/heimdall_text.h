@@ -40,6 +40,7 @@ typedef struct __component_text_t {
     char*   text_value;
     color_t text_color;
     int     text_size;
+    int     text_line_break;
 
     bool   is_selected;
 } component_text_t;

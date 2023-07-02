@@ -31,7 +31,8 @@ LDFLAGS = -g -lcurl -lSDL2 -lSDL2_ttf -lSDL2_image
 # -fsanitize=address
 
 SRC_DIR = ./src
-SRC_FILES = $(wildcard $(SRC_DIR)/*.c) $(wildcard $(SRC_DIR)/**/*.c) $(wildcard $(SRC_DIR)/**/**/*.c) $(wildcard $(SRC_DIR)/**/**/**/*.c)
+# SRC_FILES = $(wildcard $(SRC_DIR)/*.c) $(wildcard $(SRC_DIR)/**/*.c) $(wildcard $(SRC_DIR)/**/**/*.c) $(wildcard $(SRC_DIR)/**/**/**/*.c)
+SRC_FILES = $(wildcard $(SRC_DIR)/ttf/*.c) $(wildcard $(SRC_DIR)/netlore/*.c)
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.c, $(SRC_DIR)/%.o, $(SRC_FILES))
 
 COMPILED_FILES = 0

@@ -39,33 +39,33 @@
 void
 njord_set_padding_node(dom_node_t* node, double top, double bottom, double left, double right)
 {
-    njord_set_padding_render_box(node->render_box, top, bottom, left, right);
+    njord_set_padding_render_box(&node->render_box, top, bottom, left, right);
 }
 
 void
 njord_set_margin_node(dom_node_t* node, double top, double bottom, double left, double right)
 {
-    njord_set_margin_render_box(node->render_box, top, bottom, left, right);
+    njord_set_margin_render_box(&node->render_box, top, bottom, left, right);
 }
 
 void
-njord_set_padding_render_box(render_box_t rnd_box, double top, double bottom, double left, double right)
+njord_set_padding_render_box(render_box_t* rnd_box, double top, double bottom, double left, double right)
 {
-    rnd_box.padding.bottom = bottom;
-    rnd_box.padding.right  = right;
-    rnd_box.padding.left   = left;
-    rnd_box.padding.top    = top;
+    rnd_box->padding.bottom = bottom;
+    rnd_box->padding.right  = right;
+    rnd_box->padding.left   = left;
+    rnd_box->padding.top    = top;
 
     NETLORE_USE(rnd_box);
 }
 
 void
-njord_set_margin_render_box(render_box_t rnd_box, double top, double bottom, double left, double right)
+njord_set_margin_render_box(render_box_t* rnd_box, double top, double bottom, double left, double right)
 {
-    rnd_box.margin.bottom = bottom;
-    rnd_box.margin.right  = right;
-    rnd_box.margin.left   = left;
-    rnd_box.margin.top    = top;
+    rnd_box->margin.bottom = bottom;
+    rnd_box->margin.right  = right;
+    rnd_box->margin.left   = left;
+    rnd_box->margin.top    = top;
 
     NETLORE_USE(rnd_box);
 }

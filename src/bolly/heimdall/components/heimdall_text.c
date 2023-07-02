@@ -43,9 +43,22 @@ typedef struct __component_t component_t;
 void
 heimdall_text_render(window_t* window, component_t* component)
 {   
-    heimdall_render_fontf(window, component->text.text_size, 
-                          component->text.text_color, 
-                          component->pos, component->text.text_value);
+    SDL_Surface* surface = TTF_RenderText_Blended_Wrapped(heimdall_get_default_font(component->text.text_size), component->text.text_value, 
+                                                          heimdall_color_to_sdl(component->text.text_color), component->text.text_line_break);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(window->sdl_renderer, surface);
+
+    size2_t font_size = heimdall_create_size2(0, 0);
+    SDL_QueryTexture(texture, NULL, NULL, 
+                     &font_size.w, &font_size.h);
+
+    SDL_Rect rect = { 
+        .x = component->pos.x, .y = component->pos.y, 
+        .w = font_size.w,      .h = font_size.h 
+    };
+    SDL_RenderCopy(window->sdl_renderer, texture, NULL, &rect);
+
+    SDL_DestroyTexture(texture);
+    SDL_FreeSurface(surface);
 
     // TODO: make text selection
 }
