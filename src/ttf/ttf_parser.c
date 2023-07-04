@@ -38,7 +38,9 @@ ttf_read_and_store_file(ttf_font_t* font)
     long int res = ftell(file);
     fseek(file, 0, SEEK_SET);
 
-    font->font_data = malloc((sizeof(char) * res));
+    font->font_data_len = res;
+    font->font_data     = malloc((sizeof(char) * res));
+
     char curr_char = 0;
 
     if (font->font_data == NULL)
@@ -70,10 +72,7 @@ ttf_is_file_easy_check(ttf_font_t* font)
 ttf_i32
 ttf_read_tables(ttf_font_t* font)
 {
-    // font->table_cmap = ttf_parse_cmap(font, ttf_find_table("cmap"));
-    ttf_table_t* table = ttf_find_table(font, "cmap");
-    printf("%p, %lu\n", 
-        table->start_data_table, table->size_of_table);
+    font->table_cmap = ttf_parse_cmap(font, ttf_find_table(font, "cmap"));
 
     return 0;
 }

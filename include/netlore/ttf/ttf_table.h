@@ -23,11 +23,15 @@
 #ifndef __NETLORE_TTF_TABLE
 #define __NETLORE_TTF_TABLE
 
+#include <netlore/ttf/ttf_parser.h>
+
 #include <netlore/netlore.h>
 
 typedef struct ttf_table_t {
     void*  start_data_table;
     size_t size_of_table;
 } ttf_table_t;
+
+ttf_table_t* ttf_find_table(ttf_font_t* parser, char* table_name);
 
 #endif /* __NETLORE_TTF_TABLE */
