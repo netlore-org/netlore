@@ -49,7 +49,9 @@ typedef struct ttf_table_cmap_t {
     ttf_u16 version;
     ttf_u16 num_tables;
 
-    ttf_cmap_encoding_record_t encoding_records[num_tables];
+    ttf_cmap_encoding_record_t encoding_records[];
 } ttf_table_cmap_t;
+
+ttf_table_cmap_t* ttf_parse_cmap(ttf_font_t* font, ttf_table_t* table);
 
 #endif /* __NETLORE_TTF_CMAP */

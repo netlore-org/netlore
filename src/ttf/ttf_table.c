@@ -20,23 +20,23 @@
  * THE SOFTWARE.
  */
 
-#include <netlore/ttf/ttf_parser.h>
 #include <netlore/ttf/ttf_table.h>
+#include <netlore/ttf/ttf_parser.h>
 
 #include <netlore/netlore.h>
 
 ttf_table_t* 
-ttf_find_table(ttf_font_t* parser, char* table_name)
+ttf_find_table(ttf_font_t* font, char* table_name)
 {
-    for (long int i = 0; i < parser->font_data_len; i++)
+    for (long int i = 0; i < font->font_data_len - 4; i++)
     {
-        if (parser->font_data[i + 0] == table_name[0] && 
-            parser->font_data[i + 1] == table_name[1] &&
-            parser->font_data[i + 2] == table_name[2] &&
-            parser->font_data[i + 3] == table_name[3])
+        if (font->font_data[i + 0] == table_name[0] && 
+            font->font_data[i + 1] == table_name[1] &&
+            font->font_data[i + 2] == table_name[2] &&
+            font->font_data[i + 3] == table_name[3])
         {
             ttf_table_t* table = (ttf_table_t*)netlore_calloc(1, sizeof(ttf_table_t));
-            table->start_data_table = (void*)parser->font_data + (i - 1) + 4;
+            table->start_data_table = i + 4;
 
             return table;
         }

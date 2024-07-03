@@ -2,6 +2,8 @@
 
 ## About
 
+![preview](res/preview.png)
+
 **Netlore** is a simple, lightweight **experimental** browser and web engine written in C. It is a passion project that aims to showcase my love for programming while also serving as a fun and educational endeavor. Developing Netlore alone can be challenging, but I believe that I can, **contributing is wanted of course**.
 
 ## Project Goals

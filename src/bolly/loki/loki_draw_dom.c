@@ -142,11 +142,12 @@ loki_draw_node_on_window(dom_t* dom, dom_node_t* node, window_t* window,
                 text->text.text_color = color;
             }
         } else {
-            text->text.text_color = heimdall_create_color_rgba(255, 255, 255, 255);
+            text->text.text_color = heimdall_create_color_rgba(0, 0, 0, 255);
         }
 
         text->text.text_size = rule_size != NULL ? ((css_dimensions_t*)rule_size->value->ptr_to_value)->value : 16;
         text->text.text_value = node->content;
+        printf("%s, from element %s\n", node->content, node->tag);
         text->text.text_line_break = node->render_box.width;
 
         heimdall_add_component(window->ui, text);
@@ -173,8 +174,10 @@ loki_draw_node(dom_t* dom, dom_node_t* node, window_t* window,
 {
     loki_debug_node_draw(node);
 
-    if (strcmp(node->tag, "head") != 0)
-        loki_draw_node_on_window(dom, node, window, viewport_size, viewport_pos);
+    if (strcmp(node->tag, "head") == 0)
+        return;
+
+    loki_draw_node_on_window(dom, node, window, viewport_size, viewport_pos);
 
     if (node->children_len == 0) return;
 

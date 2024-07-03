@@ -69,7 +69,7 @@ heimdall_initalize_window(const char* window_title, size2_t window_size,
     NETLORE_NO_NULL(window);
 
     window->sdl_window   = SDL_CreateWindow(window_title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
-                                          window_size.w, window_size.h, SDL_WINDOW_SHOWN);
+                                          window_size.w, window_size.h, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     window->sdl_renderer = SDL_CreateRenderer(window->sdl_window, -1, 0);
 
     window->window_loop = false;

@@ -28,7 +28,7 @@
 #include <netlore/ttf/ttf_types.h>
 #include <netlore/ttf/ttf_cmap.h>
 
-typedef struct ttf_font_t {
+typedef struct __ttf_font_t {
     const char* font_path;
     ttf_u8* font_data;
     long int font_data_len;
