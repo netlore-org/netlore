@@ -32,7 +32,10 @@ LDFLAGS = -g -lcurl -lSDL2 -lSDL2_ttf -lSDL2_image
 
 SRC_DIR = ./src
 SRC_FILES = $(wildcard $(SRC_DIR)/*.c) $(wildcard $(SRC_DIR)/**/*.c) $(wildcard $(SRC_DIR)/**/**/*.c) $(wildcard $(SRC_DIR)/**/**/**/*.c)
+<<<<<<< HEAD
 # SRC_FILES = $(wildcard $(SRC_DIR)/ttf/*.c) $(wildcard $(SRC_DIR)/netlore/*.c)
+=======
+>>>>>>> a23788c03fa7994bd5eedf7ec09000f6d146aea7
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.c, $(SRC_DIR)/%.o, $(SRC_FILES))
 
 COMPILED_FILES = 0
